@@ -1,0 +1,50 @@
+{
+  "metas": {
+    "title": "=title",
+    "site": "Croner",
+    "lang": "en",
+    "description": "Cron for JavaScript, TypeScript, Rust, Python, .NET and C++"
+  },
+  "substitute": {
+    "$CRONER_VERSION": "11.0.0"
+  },
+  "top_links": [
+    {
+      "icon": "fab fa-github",
+      "title": "GitHub Repository",
+      "url": "https://github.com/hexagon/croner"
+    },
+    {
+      "icon": "fas fa-cube",
+      "title": "JSR Package",
+      "url": "https://jsr.io/@hexagon/croner"
+    },
+    {
+      "icon": "fab fa-npm",
+      "title": "NPM Library",
+      "url": "https://npmjs.com/package/croner"
+    }
+  ],
+  "nav_links": [
+    {
+      "title": "croner (JavaScript)",
+      "url": "https://github.com/hexagon/croner"
+    },
+    {
+      "title": "croner-rust",
+      "url": "https://github.com/hexagon/croner-rust"
+    },
+    {
+      "title": "croner-py",
+      "url": "https://github.com/hexagon/croner-py"
+    },
+    {
+      "title": "croner-dotnet",
+      "url": "https://github.com/hexagon/croner-dotnet"
+    },
+    {
+      "title": "croner-cpp",
+      "url": "https://github.com/hexagon/croner-cpp"
+    }
+  ]
+}
