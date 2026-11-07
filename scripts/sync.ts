@@ -24,9 +24,16 @@ if (!croner) {
 }
 
 const docs = join(croner, "docs");
+if (await exists(join(docs, "src"))) {
+  console.error(
+    `${croner} has the old docs layout (docs/src), from before the site moved to croner-site.\n` +
+      "Use a croner version where docs/ holds the JavaScript pages directly.",
+  );
+  Deno.exit(1);
+}
 for await (const entry of walk(docs, { includeDirs: false })) {
   const path = relative(docs, entry.path);
-  if (path === "README.md") continue;
+  if (path === "README.md" || !path.endsWith(".md")) continue;
   await copy(entry.path, join("src", path), { overwrite: true });
   console.log(`Copied ${path}`);
 }
