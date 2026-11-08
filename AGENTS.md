@@ -3,8 +3,8 @@
 ## Project Overview
 
 croner-site is the source of [croner.56k.guru](https://croner.56k.guru), the documentation site for every
-Croner implementation. It is built by one Deno script, `scripts/build.ts` (markdown-it and highlight.js, no
-framework), and deployed to GitHub Pages from the `main` branch. All pages are committed in `src/`: the build reads
+Croner implementation. It is built by a small Deno build (`scripts/build.ts` and `scripts/layout.ts`, using markdown-it
+and highlight.js), and deployed to GitHub Pages from the `main` branch. All pages are committed in `src/`: the build reads
 nothing from the other repositories.
 
 ## The Croner repositories
@@ -32,7 +32,7 @@ behavior. Read those, and the `CHANGELOG.md` where there is one, when syncing.
 | `src/usage/pattern.md`   | All five: pattern syntax, nicknames, per-language exceptions, and the "Options in each language" table with links to each README section |
 | `src/contributing.md`    | General; links to every repository                                                         |
 | `src/usage/index.md`, `basics.md`, `configuration.md`, `examples.md`, `src/comparison.md`, `src/migration.md` | JavaScript only: copies of `docs/` in croner (see below) |
-| `src/_data.json`         | `version` (croner's latest released version, used for `$CRONER_VERSION`) and `repos`, the repository links in the sidebar |
+| `src/_data.json`         | `version` (croner's latest released version, used for `$CRONER_VERSION`), `nav` (the sidebar groups and page order) and `repos` (the repository links) |
 
 ## Sync instruction
 
@@ -47,12 +47,12 @@ croner-site and open a pull request; never push directly to `main`.
 3. JavaScript pages: run `deno task sync ../croner` with croner checked out at the branch to publish
    (normally `master`). It copies `docs/**/*.md` (except `docs/README.md`) into `src/` and updates
    `version` in `src/_data.json` for a release version. Review the diff. Pages that exist in `src/` but no longer in
-   croner's `docs/` must be removed by hand. If croner's `docs/` still has the old layout (`docs/src/`), the
-   script stops: copy the changed JavaScript pages by hand instead, keeping the titles, `parent` and
-   `nav_order` already used in `src/`.
+   croner's `docs/` must be removed by hand (and from `nav` in `src/_data.json`); new pages must be added to
+   `nav`. If croner's `docs/` still has the old layout (`docs/src/`), the
+   script stops: copy the changed JavaScript pages by hand instead, keeping the titles already used in `src/`.
 4. Shared pages: for each repository, check and update
    - its row in the implementations table and the features list in `src/index.md`,
-   - its quick example in `src/index.md` (it must still compile/run with the current API),
+   - its quick example (a tab) in `src/index.md` (it must still compile/run with the current API),
    - its section in `src/installation.md` (package name, version in examples such as `croner = "4.0"`,
      minimum language/runtime version, optional features),
    - its column in the options table in `src/usage/pattern.md`, and any per-language notes on pattern
@@ -76,13 +76,19 @@ deno task build   # to _site/
 deno task sync ../croner   # copy the JavaScript pages from a croner checkout
 ```
 
-- Front matter (`title`, `nav_order`, and `parent` with the title of the parent page) drives the sidebar.
-  `has_children` (used in croner's `docs/`) is accepted and ignored.
+- `nav` in `src/_data.json` sets the sidebar groups, the page order and the previous/next links. A page is listed as
+  its path in `src/`, or as `[path, label]` to show a shorter label. The build warns about pages that are not listed:
+  add new pages copied by `deno task sync` there. Front matter `title` is the page title; `nav_order`, `parent` and
+  `has_children` (used in croner's `docs/`) are ignored. `layout: home` is used by `src/index.md` only.
 - `$CRONER_VERSION` in a page is replaced with `version` in `src/_data.json`.
 - Relative links to `.md` files are rewritten to page URLs (`usage/pattern.md` becomes `/usage/pattern/`).
 - `{ .note }` or `{ .warning }` on the line after a block quote (or `{: .note }` before a paragraph) makes it a callout.
-- The page layout is the `layout` function in `scripts/build.ts`; styles are in `src/style.css`. Files in `src/` that
-  are not Markdown are copied as they are; names starting with `_` are skipped.
+- Code blocks get a header with the language and a copy button. ```` ```rust title="Rust" ```` sets the header text,
+  and code blocks with titles inside `<div class="tabs">` (with blank lines around them) become tabs, as in the quick
+  examples in `src/index.md`.
+- Templates are in `scripts/layout.ts`; styles, the client script (theme, tabs, copy, search), fonts and the logo are
+  in `src/assets/`. Files in `src/` that are not Markdown are copied as they are; names starting with `_` are
+  skipped. The build also writes `search.json`, `sitemap.xml` and `robots.txt`.
 - `_site/` and a `/croner/` checkout are ignored by git.
 
 ## Publishing

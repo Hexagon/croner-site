@@ -3,8 +3,8 @@
 Source of [croner.56k.guru](https://croner.56k.guru), the documentation site for Croner in
 [JavaScript/TypeScript](https://github.com/Hexagon/croner), [Rust](https://github.com/Hexagon/croner-rust),
 [Python](https://github.com/Hexagon/croner-py), [.NET](https://github.com/Hexagon/croner-dotnet) and
-[C++](https://github.com/Hexagon/croner-cpp). Built with a single Deno script (`scripts/build.ts`):
-Markdown in, static HTML out, no client-side JavaScript framework.
+[C++](https://github.com/Hexagon/croner-cpp). Built with a small Deno script (`scripts/build.ts`,
+`scripts/layout.ts`): Markdown in, static HTML out.
 
 All pages are committed in `src/`, and the site is built from the `main` branch of this repository alone.
 

@@ -1,6 +1,13 @@
-// Builds the site: every Markdown file in src/ becomes a page in _site/, other files are copied as they are.
-// Front matter: `title`, `nav_order` and `parent` (the title of the parent page) build the navigation.
-// `$CRONER_VERSION` is replaced with `version` from src/_data.json. Links to .md files are rewritten to page URLs.
+// Builds the site: every Markdown file in src/ becomes a page in _site/, other files are copied as they are
+// (names starting with `_` are skipped). The page templates are in scripts/layout.ts.
+//
+// - `nav` in src/_data.json orders the pages into sidebar groups. Pages missing from it are listed in a warning.
+// - `$CRONER_VERSION` is replaced with `version` from src/_data.json.
+// - Relative links to .md files are rewritten to page URLs (`../pattern.md#x` becomes `/usage/pattern/#x`).
+// - Fenced code gets a header with its language and a copy button. ```ts title="Node.js" sets the header text,
+//   and code blocks in a <div class="tabs"> become tabs named by their titles.
+// - A `{ .note }` or `{ .warning }` line after a block quote (or `{: .note }` before a paragraph) makes a callout.
+// - search.json holds every page section for the search dialog.
 //
 // Usage: deno task build, or deno task serve to rebuild on changes and serve at http://localhost:8000
 
@@ -12,35 +19,32 @@ import * as posix from "@std/path/posix";
 import hljs from "highlight.js";
 // @ts-types="npm:@types/markdown-it@^14"
 import MarkdownIt from "markdown-it";
-
-type Heading = { level: number; id: string; text: string };
-type Page = {
-  src: string;
-  url: string;
-  title: string;
-  order: number;
-  parent?: string;
-  html: string;
-  headings: Heading[];
-};
+import { esc, layout, type Page, type Site } from "./layout.ts";
 
 const SRC = "src", OUT = "_site";
-const LOGO = "https://cdn.jsdelivr.net/gh/hexagon/croner@master/croner.png";
-const ANALYTICS = "https://track.webpulseanalytics.com/client/653eb150048754e8b13f076e";
 const data = JSON.parse(await Deno.readTextFile(join(SRC, "_data.json")));
 
-const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&${{ "&": "amp", "<": "lt", ">": "gt", '"': "quot" }[c]};`);
 const slug = (s: string) => s.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-");
 const urlOf = (src: string) =>
   src === "404.md" ? "/404.html" : "/" + src.replace(/(^|\/)index\.md$/, "$1").replace(/\.md$/, "/");
+const LANGS: Record<string, string> = {
+  ts: "TypeScript",
+  js: "JavaScript",
+  rust: "Rust",
+  python: "Python",
+  csharp: "C#",
+  cpp: "C++",
+  toml: "TOML",
+  bash: "Shell",
+  sh: "Shell",
+  cmake: "CMake",
+  html: "HTML",
+  json: "JSON",
+};
 
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  highlight: (code, lang) => hljs.getLanguage(lang) ? hljs.highlight(code, { language: lang }).value : "",
-});
+const md = new MarkdownIt({ html: true, linkify: true });
 
-// Give headings ids and collect them for the table of contents.
+// Give headings ids and anchor links, and collect them for the table of contents.
 md.core.ruler.push("headings", (state) => {
   const seen = new Set<string>();
   state.env.headings = [];
@@ -54,8 +58,15 @@ md.core.ruler.push("headings", (state) => {
     state.env.headings.push({ level: Number(token.tag[1]), id, text });
   });
 });
+md.renderer.rules.heading_close = (tokens, i) => {
+  const open = tokens.findLast((t, j) => j < i && t.type === "heading_open")!;
+  const anchor = open.tag === "h1"
+    ? ""
+    : `<a class="anchor" href="#${open.attrGet("id")}" aria-label="Link to this section">#</a>`;
+  return `${anchor}</${tokens[i].tag}>\n`;
+};
 
-// Rewrite relative links to Markdown files (`../pattern.md#x`) to page URLs (`/usage/pattern/#x`).
+// Rewrite relative links to Markdown files to page URLs.
 md.renderer.rules.link_open = (tokens, i, options, env, self) => {
   const href = tokens[i].attrGet("href") ?? "";
   const [, path, hash = ""] = href.match(/^([^:#]+\.md)(#.*)?$/) ?? [];
@@ -63,16 +74,55 @@ md.renderer.rules.link_open = (tokens, i, options, env, self) => {
   return self.renderToken(tokens, i, options);
 };
 
-// Callouts: a `{ .note }` (or `{: .warning }`) line after a block quote, or before a paragraph, sets its class.
+// Code blocks with a header (language or title) and a copy button.
+md.renderer.rules.fence = (tokens, i) => {
+  const { info, content } = tokens[i];
+  const lang = info.split(/\s+/)[0];
+  const title = info.match(/title="([^"]+)"/)?.[1];
+  const code = hljs.getLanguage(lang) ? hljs.highlight(content, { language: lang }).value : esc(content);
+  const label = title ?? LANGS[lang] ?? lang;
+  return `<div class="code${label ? "" : " bare"}"${title ? ` data-title="${esc(title)}"` : ""}>` +
+    `<div class="code-head"><span>${esc(label)}</span><button class="copy" type="button">Copy</button></div>` +
+    `<pre><code class="language-${esc(lang || "text")}">${code}</code></pre></div>\n`;
+};
+
+// Callouts. A leading bold line (`**Warning**<br>`, or `**Warning**` and a line break) becomes the title.
+const callout = (cls: string, inner: string) => {
+  let title = cls[0].toUpperCase() + cls.slice(1);
+  inner = inner.replace(/^<p><strong>([^<]+)<\/strong>(?:<br>)?\n/, (_, t) => {
+    title = t.replace(/[:]$/, "");
+    return "<p>";
+  });
+  return `<div class="callout ${cls}"><p class="callout-title">${esc(title)}</p>\n${inner}</div>\n`;
+};
 const callouts = (html: string) =>
   html
-    .replace(/<blockquote>\n([\s\S]*?)<\/blockquote>(?:\n<p>\{:? *\.(\w+) *\}<\/p>)?/g, (_, inner, cls) => {
+    .replace(/<blockquote>\n([\s\S]*?)<\/blockquote>\n(?:<p>\{:? *\.(\w+) *\}<\/p>\n)?/g, (all, inner, cls) => {
       const inside = inner.match(/\n\{:? *\.(\w+) *\}<\/p>\n$/);
       if (inside) [cls, inner] = [inside[1], inner.slice(0, -inside[0].length) + "</p>\n"];
-      return `<blockquote${cls ? ` class="callout ${cls}"` : ""}>\n${inner}</blockquote>`;
+      return cls ? callout(cls, inner) : all;
     })
-    .replace(/<p>\{:? *\.(\w+) *\}\n/g, '<p class="callout $1">');
+    .replace(/<p>\{:? *\.(\w+) *\}\n([\s\S]*?<\/p>)\n/g, (_, cls, rest) => callout(cls, `<p>${rest}\n`));
 
+// Search sections: the text under each h2/h3 (and the text before the first one).
+const plain = (html: string) =>
+  html.replace(/<a class="anchor"[^>]*>#<\/a>|<div class="code-head">[\s\S]*?<\/div>/g, "")
+    .replace(/<\/(p|li|h\d|td|th|pre|div|tr|blockquote)>|<br>/g, " ").replace(/<[^>]+>/g, "")
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ").trim();
+const sections = (page: Page) =>
+  page.html.split(/(?=<h[23] id=")/).map((part) => {
+    const [, id, heading] = part.match(/^<h[23] id="([^"]+)">([\s\S]*?)<a class="anchor"/) ?? [];
+    return {
+      url: page.url + (id ? `#${id}` : ""),
+      page: page.title,
+      heading: heading ? plain(heading) : "",
+      text: plain(part.replace(/^<h[123][\s\S]*?<\/h[123]>/, "")),
+    };
+  }).filter((s) => s.text || s.heading);
+
+// Read and render all pages.
 const pages: Page[] = [];
 await emptyDir(OUT);
 for await (const entry of walk(SRC, { includeDirs: false })) {
@@ -83,100 +133,50 @@ for await (const entry of walk(SRC, { includeDirs: false })) {
     await copy(entry.path, join(OUT, src));
     continue;
   }
-  const { attrs, body } = extract<Record<string, string | number>>(await Deno.readTextFile(entry.path));
-  const env = { src, headings: [] as Heading[] };
+  const { attrs, body } = extract<Record<string, string>>(await Deno.readTextFile(entry.path));
+  const env = { src, headings: [] as Page["headings"] };
   const html = callouts(md.render(body.replaceAll("$CRONER_VERSION", data.version), env));
-  const title = String(attrs.title ?? env.headings[0]?.text ?? src);
   pages.push({
     src,
     url: urlOf(src),
-    title,
-    order: Number(attrs.nav_order ?? 99),
-    parent: attrs.parent as string,
+    title: attrs.title ?? env.headings[0]?.text ?? src,
+    description: attrs.description,
+    layout: attrs.layout ?? "doc",
     html,
     headings: env.headings,
   });
 }
 
-const byOrder = (a: Page, b: Page) => a.order - b.order || a.title.localeCompare(b.title);
-const children = (title?: string) => pages.filter((p) => p.parent === title && p.src !== "404.md").sort(byOrder);
-const flat = children().flatMap((p) => [p, ...children(p.title)]);
+// Navigation groups from _data.json.
+const bySrc = new Map(pages.map((p) => [p.src, p]));
+const nav: Site["nav"] = data.nav.map((group: { title: string; pages: (string | [string, string])[] }) => ({
+  title: group.title,
+  items: group.pages.map((entry) => {
+    const [src, label] = Array.isArray(entry) ? entry : [entry];
+    const page = bySrc.get(src);
+    if (!page) throw new Error(`The nav in src/_data.json lists ${src}, which is not in src/`);
+    page.group = group.title;
+    return { page, label: label ?? page.title };
+  }),
+}));
+const unlisted = pages.filter((p) => !p.group && p.src !== "404.md").map((p) => p.src);
+if (unlisted.length) console.warn(`Not in the nav in src/_data.json: ${unlisted.join(", ")}`);
 
-const navList = (list: Page[], current: Page): string =>
-  `<ul>${
-    list.map((p) =>
-      `<li><a href="${p.url}"${p === current ? ' aria-current="page"' : ""}>${esc(p.title)}</a>` +
-      (children(p.title).length ? navList(children(p.title), current) : "") + "</li>"
-    ).join("")
-  }</ul>`;
-
-const toc = (page: Page) => {
-  const items = page.headings.filter((h) => h.level === 2 || h.level === 3);
-  if (items.length < 2) return "";
-  const top = Math.min(...items.map((h) => h.level));
-  return `<aside class="toc"><p>On this page</p><ul>${
-    items.map((h) => `<li${h.level > top ? ' class="sub"' : ""}><a href="#${h.id}">${esc(h.text)}</a></li>`).join("")
-  }</ul></aside>`;
-};
-
-const pager = (page: Page) => {
-  const i = flat.indexOf(page);
-  const link = (p: Page | undefined, rel: string, label: string) =>
-    p ? `<a class="${rel}" href="${p.url}" rel="${rel}"><small>${label}</small>${esc(p.title)}</a>` : "<span></span>";
-  return i < 0
-    ? ""
-    : `<nav class="pager">${link(flat[i - 1], "prev", "Previous")}${link(flat[i + 1], "next", "Next")}</nav>`;
-};
-
-const layout = (page: Page) =>
-  `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${page.url === "/" ? `${data.title}: ${esc(data.description)}` : `${esc(page.title)} · ${data.title}`}</title>
-<meta name="description" content="${esc(data.description)}">
-<link rel="canonical" href="${data.url}${page.url}">
-<link rel="icon" href="${LOGO}">
-<link rel="stylesheet" href="/style.css">
-<script async type="module" src="${ANALYTICS}"></script>
-</head>
-<body>
-<header class="top">
-  <button class="menu" aria-label="Menu" onclick="document.body.classList.toggle('nav-open')">☰</button>
-  <a class="brand" href="/"><img src="${LOGO}" alt="" width="28" height="28">Croner</a>
-  <nav><a href="https://github.com/Hexagon/croner">GitHub</a><a href="/sponsors/">Sponsor</a></nav>
-</header>
-<div class="shell">
-  <aside class="sidebar">
-    <nav>${navList(children(), page)}</nav>
-    <p>Repositories</p>
-    <ul>${
-    data.repos.map((r: { title: string; url: string }) => `<li><a href="${r.url}">${esc(r.title)}</a></li>`).join("")
-  }</ul>
-  </aside>
-  <main>
-    <article>${page.html}</article>
-    ${pager(page)}
-    <footer><a href="https://github.com/Hexagon/croner-site/edit/main/src/${page.src}">Edit this page</a><span>By <a href="https://github.com/Hexagon">Hexagon</a> and contributors</span></footer>
-  </main>
-  ${toc(page)}
-</div>
-</body>
-</html>
-`;
-
+// Write pages, search index, sitemap and robots.txt.
+const site: Site = { ...data, nav, flat: nav.flatMap((g) => g.items) };
 for (const page of pages) {
   const file = join(OUT, page.url.endsWith("/") ? page.url + "index.html" : page.url);
   await ensureDir(dirname(file));
-  await Deno.writeTextFile(file, layout(page));
+  await Deno.writeTextFile(file, layout(page, site));
 }
+await Deno.writeTextFile(join(OUT, "search.json"), JSON.stringify(site.flat.flatMap(({ page }) => sections(page))));
 await Deno.writeTextFile(
   join(OUT, "sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${
-    flat.map((p) => `<url><loc>${data.url}${p.url}</loc></url>`).join("\n")
+    site.flat.map(({ page }) => `  <url><loc>${data.url}${page.url}</loc></url>`).join("\n")
   }\n</urlset>\n`,
 );
+await Deno.writeTextFile(join(OUT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${data.url}/sitemap.xml\n`);
 console.log(`Built ${pages.length} pages to ${OUT}/`);
 
 if (Deno.args.includes("--serve")) {

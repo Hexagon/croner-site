@@ -3,11 +3,36 @@
   "description": "Cron for JavaScript, TypeScript, Rust, Python, .NET and C++",
   "url": "https://croner.56k.guru",
   "version": "11.0.0",
+  "nav": [
+    {
+      "title": "Introduction",
+      "pages": ["index.md", "installation.md"]
+    },
+    {
+      "title": "Reference",
+      "pages": ["usage/pattern.md"]
+    },
+    {
+      "title": "JavaScript",
+      "pages": [
+        ["usage/index.md", "Usage"],
+        "usage/basics.md",
+        "usage/configuration.md",
+        "usage/examples.md",
+        ["comparison.md", "Comparison"],
+        ["migration.md", "Migration"]
+      ]
+    },
+    {
+      "title": "Project",
+      "pages": ["contributing.md", ["sponsors.md", "Sponsorship"]]
+    }
+  ],
   "repos": [
-    { "title": "JavaScript", "url": "https://github.com/Hexagon/croner" },
-    { "title": "Rust", "url": "https://github.com/Hexagon/croner-rust" },
-    { "title": "Python", "url": "https://github.com/Hexagon/croner-py" },
-    { "title": ".NET", "url": "https://github.com/Hexagon/croner-dotnet" },
-    { "title": "C++", "url": "https://github.com/Hexagon/croner-cpp" }
+    { "title": "croner", "lang": "JavaScript", "url": "https://github.com/Hexagon/croner" },
+    { "title": "croner-rust", "lang": "Rust", "url": "https://github.com/Hexagon/croner-rust" },
+    { "title": "croner-py", "lang": "Python", "url": "https://github.com/Hexagon/croner-py" },
+    { "title": "croner-dotnet", "lang": ".NET", "url": "https://github.com/Hexagon/croner-dotnet" },
+    { "title": "croner-cpp", "lang": "C++", "url": "https://github.com/Hexagon/croner-cpp" }
   ]
 }

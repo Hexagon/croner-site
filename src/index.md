@@ -1,13 +1,70 @@
 ---
 title: "Overview"
 nav_order: 1
+layout: home
 ---
 
 # Croner
 
 <p class="lead">Trigger functions or evaluate cron expressions. No dependencies. All features. In JavaScript/TypeScript, Rust, Python, .NET and C++.</p>
 
-Try the JavaScript version live on [JSFiddle](https://jsfiddle.net/hexag0n/hoa8kwsb/), or go to [Installation](installation.md).
+<p class="links"><a href="/installation/">Installation</a> <a href="/usage/pattern/">Pattern</a> <a href="/usage/">JavaScript usage</a> <a href="https://jsfiddle.net/hexag0n/hoa8kwsb/">Try the JavaScript version on JSFiddle</a></p>
+
+The next five weekdays at 09:30 in Stockholm, in each language. The Rust example uses the `chrono-tz` crate for the time zone.
+
+<div class="tabs">
+
+```ts title="JavaScript"
+import { Cron } from "croner";
+
+const job = new Cron("30 9 * * MON-FRI", { timezone: "Europe/Stockholm" });
+console.log(job.nextRuns(5));
+```
+
+```rust title="Rust"
+use chrono::Utc;
+use chrono_tz::Europe::Stockholm;
+use croner::Cron;
+use std::str::FromStr;
+
+let cron = Cron::from_str("30 9 * * MON-FRI").expect("Invalid pattern");
+let now = Utc::now().with_timezone(&Stockholm);
+for run in cron.iter_after(now).take(5) {
+    println!("{run}");
+}
+```
+
+```python title="Python"
+from croner import Cron
+
+job = Cron("30 9 * * MON-FRI", timezone="Europe/Stockholm")
+print(job.next_runs(5))
+```
+
+```csharp title=".NET"
+using Croner;
+
+var cron = Cron.Parse("30 9 * * MON-FRI");
+var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm");
+foreach (var run in cron.IterAfter(DateTimeOffset.UtcNow, tz).Take(5))
+{
+    Console.WriteLine(run);
+}
+```
+
+```cpp title="C++"
+#include <croner/croner.hpp>
+#include <iostream>
+
+int main() {
+  croner::Options opts;
+  opts.timezone = "Europe/Stockholm";
+  croner::Cron job("30 9 * * MON-FRI", opts);
+  for (auto run : job.next_runs(5)) std::cout << croner::to_iso_string(run) << "\n";
+}
+```
+
+</div>
 
 ## Implementations
 
@@ -41,71 +98,5 @@ The JavaScript version also:
 *   Includes [TypeScript](https://www.typescriptlang.org/) typings.
 *   Supports asynchronous functions.
 *   Is thoroughly tested and relied upon by well-known projects such as [pm2](https://github.com/unitech/pm2), [Uptime Kuma](https://github.com/louislam/uptime-kuma), [ZWave JS](https://github.com/zwave-js/zwave-js-ui) and [TrueNAS](https://github.com/truenas/webui).
-
-## Quick examples
-
-**The next five weekdays at 09:30 in Stockholm**, in each language.
-
-### JavaScript / TypeScript
-
-```ts
-import { Cron } from "croner";
-
-const job = new Cron("30 9 * * MON-FRI", { timezone: "Europe/Stockholm" });
-console.log(job.nextRuns(5));
-```
-
-### Rust
-
-With the `chrono-tz` crate for the time zone:
-
-```rust
-use chrono::Utc;
-use chrono_tz::Europe::Stockholm;
-use croner::Cron;
-use std::str::FromStr;
-
-let cron = Cron::from_str("30 9 * * MON-FRI").expect("Invalid pattern");
-let now = Utc::now().with_timezone(&Stockholm);
-for run in cron.iter_after(now).take(5) {
-    println!("{run}");
-}
-```
-
-### Python
-
-```python
-from croner import Cron
-
-job = Cron("30 9 * * MON-FRI", timezone="Europe/Stockholm")
-print(job.next_runs(5))
-```
-
-### C# (.NET)
-
-```csharp
-using Croner;
-
-var cron = Cron.Parse("30 9 * * MON-FRI");
-var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm");
-foreach (var run in cron.IterAfter(DateTimeOffset.UtcNow, tz).Take(5))
-{
-    Console.WriteLine(run);
-}
-```
-
-### C++
-
-```cpp
-#include <croner/croner.hpp>
-#include <iostream>
-
-int main() {
-  croner::Options opts;
-  opts.timezone = "Europe/Stockholm";
-  croner::Cron job("30 9 * * MON-FRI", opts);
-  for (auto run : job.next_runs(5)) std::cout << croner::to_iso_string(run) << "\n";
-}
-```
 
 More JavaScript examples are in [Usage (JavaScript)](usage/examples.md), and a comparison with other JavaScript libraries in [Comparison (JavaScript)](comparison.md).
