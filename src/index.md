@@ -6,7 +6,7 @@ layout: home
 
 # Croner
 
-<p class="lead">Trigger functions or evaluate cron expressions. No dependencies. All features. In JavaScript/TypeScript, Rust, Python, .NET and C++.</p>
+<p class="lead">Trigger functions or evaluate cron expressions, in JavaScript/TypeScript, Rust, Python, .NET and C++.</p>
 
 <p class="links"><a href="/installation/">Installation</a> <a href="/usage/pattern/">Pattern</a> <a href="/usage/">JavaScript usage</a> <a href="https://jsfiddle.net/hexag0n/hoa8kwsb/">Try the JavaScript version on JSFiddle</a></p>
 
@@ -68,7 +68,7 @@ int main() {
 
 ## Implementations
 
-Croner is available for several languages. All implementations parse the same [patterns](usage/pattern.md), follow the same rules for daylight saving time and share test cases, so a pattern gives the same runs whichever language you use it from.
+Croner is available for several languages. All implementations use the same [pattern](usage/pattern.md) syntax and the same rules for daylight saving time. Where they differ, for example in which fields accept `?`, the Pattern page says so.
 
 | Language                  | Repository                                                  | Package                                                                                          | Evaluate | Schedule | Describe |
 |---------------------------|-------------------------------------------------------------|--------------------------------------------------------------------------------------------------|:--------:|:--------:|:--------:|
@@ -89,7 +89,7 @@ The usage documentation for JavaScript is on this site. The other implementation
 *   Target different time zones, with well defined DST behavior.
 *   Schedule functions (all but Rust), with [overrun protection](usage/examples.md#overrun-protection), [error handling](usage/examples.md#error-handling), pause, resume, stop, max runs, minimum interval, and start and stop dates.
 *   Operates in-memory, with no need for a database or configuration files.
-*   Zero dependencies, apart from a date and time crate in Rust (`chrono` or `jiff`).
+*   No dependencies in JavaScript, Python, .NET and C++. The Rust crate depends on `chrono` or `jiff` for dates and times, and on `derive_builder` and `strum`.
 
 The JavaScript version also:
 

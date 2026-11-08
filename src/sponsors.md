@@ -1,5 +1,5 @@
 ---
-title: "Donations"
+title: "Sponsorship"
 nav_order: 8
 ---
 

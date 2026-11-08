@@ -90,4 +90,6 @@ FetchContent_MakeAvailable(croner)
 target_link_libraries(my_app PRIVATE croner::croner)
 ```
 
-It can also be installed with CMake or Conan, or by copying the headers in `include/croner` to your include path. See [croner-cpp](https://github.com/Hexagon/croner-cpp) for details and usage.
+It can also be installed with CMake (`find_package(croner)`) or a local Conan recipe, or by copying the headers in `include/croner` to your include path.
+
+Time zones are read from the system zoneinfo database on Linux, macOS and the BSDs. On Windows, build as C++20 with MSVC to use `std::chrono::tzdb`. See [croner-cpp](https://github.com/Hexagon/croner-cpp) for details and usage.
