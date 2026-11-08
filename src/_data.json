@@ -1,50 +1,78 @@
 {
-  "metas": {
-    "title": "=title",
-    "site": "Croner",
-    "lang": "en",
-    "description": "Cron for JavaScript, TypeScript, Rust, Python, .NET and C++"
-  },
-  "substitute": {
-    "$CRONER_VERSION": "11.0.0"
-  },
-  "top_links": [
+  "title": "Croner",
+  "description": "Cron for JavaScript, TypeScript, Rust, Python, .NET and C++",
+  "url": "https://croner.56k.guru",
+  "version": "11.0.0",
+  "nav": [
     {
-      "icon": "fab fa-github",
-      "title": "GitHub Repository",
-      "url": "https://github.com/hexagon/croner"
+      "title": "Introduction",
+      "pages": [
+        "index.md",
+        "installation.md"
+      ]
     },
     {
-      "icon": "fas fa-cube",
-      "title": "JSR Package",
-      "url": "https://jsr.io/@hexagon/croner"
+      "title": "Reference",
+      "pages": [
+        "usage/pattern.md"
+      ]
     },
     {
-      "icon": "fab fa-npm",
-      "title": "NPM Library",
-      "url": "https://npmjs.com/package/croner"
+      "title": "JavaScript",
+      "pages": [
+        [
+          "usage/index.md",
+          "Usage"
+        ],
+        "usage/basics.md",
+        "usage/configuration.md",
+        "usage/examples.md",
+        [
+          "comparison.md",
+          "Comparison"
+        ],
+        [
+          "migration.md",
+          "Migration"
+        ]
+      ]
+    },
+    {
+      "title": "Project",
+      "pages": [
+        "contributing.md",
+        [
+          "sponsors.md",
+          "Sponsorship"
+        ]
+      ]
     }
   ],
-  "nav_links": [
+  "repos": [
     {
-      "title": "croner (JavaScript)",
-      "url": "https://github.com/hexagon/croner"
+      "title": "croner",
+      "lang": "JavaScript",
+      "url": "https://github.com/Hexagon/croner"
     },
     {
       "title": "croner-rust",
-      "url": "https://github.com/hexagon/croner-rust"
+      "lang": "Rust",
+      "url": "https://github.com/Hexagon/croner-rust"
     },
     {
       "title": "croner-py",
-      "url": "https://github.com/hexagon/croner-py"
+      "lang": "Python",
+      "url": "https://github.com/Hexagon/croner-py"
     },
     {
       "title": "croner-dotnet",
-      "url": "https://github.com/hexagon/croner-dotnet"
+      "lang": ".NET",
+      "url": "https://github.com/Hexagon/croner-dotnet"
     },
     {
       "title": "croner-cpp",
-      "url": "https://github.com/hexagon/croner-cpp"
+      "lang": "C++",
+      "url": "https://github.com/Hexagon/croner-cpp"
     }
   ]
 }

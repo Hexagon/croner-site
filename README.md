@@ -3,8 +3,8 @@
 Source of [croner.56k.guru](https://croner.56k.guru), the documentation site for Croner in
 [JavaScript/TypeScript](https://github.com/Hexagon/croner), [Rust](https://github.com/Hexagon/croner-rust),
 [Python](https://github.com/Hexagon/croner-py), [.NET](https://github.com/Hexagon/croner-dotnet) and
-[C++](https://github.com/Hexagon/croner-cpp). Built with [Lume](https://lume.land) and
-[Lumocs](https://github.com/Hexagon/lumocs).
+[C++](https://github.com/Hexagon/croner-cpp). Built with a small Deno script (`scripts/build.ts`,
+`scripts/layout.ts`): Markdown in, static HTML out.
 
 All pages are committed in `src/`, and the site is built from the `main` branch of this repository alone.
 
@@ -20,7 +20,7 @@ bring those changes into the site, as a pull request.
 Requires [Deno](https://deno.com) 2.
 
 ```sh
-deno task serve   # http://localhost:8000
+deno task serve   # rebuild on change, http://localhost:8000
 deno task build   # to _site/
 ```
 

@@ -36,13 +36,13 @@ For Deno, import Croner from JSR:
 import { Cron } from "jsr:@hexagon/croner@$CRONER_VERSION";
 ```
 
-Make sure to replace `$CRONER_VERSION` with the latest version.
-
 ### In a Webpage Using the UMD-module
 
 To use Croner in a webpage, you can load it as a UMD module from a CDN:
 
-`<script src="https://cdn.jsdelivr.net/npm/croner@11/dist/croner.umd.js"></script>`
+```html
+<script src="https://cdn.jsdelivr.net/npm/croner@11/dist/croner.umd.js"></script>
+```
 
 ## Rust
 

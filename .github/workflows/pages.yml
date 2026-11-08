@@ -1,4 +1,4 @@
-name: Deploy Lumocs with GitHub Pages
+name: Build and deploy to GitHub Pages
 
 # The site is built from this repository alone (all pages are committed in src/).
 # Pull requests and other branches only build; pushes to main also deploy.
@@ -40,7 +40,7 @@ jobs:
         with:
           deno-version: "v2.x"
 
-      - name: Run Lume
+      - name: Build
         run: deno task build
 
       - name: Upload artifact

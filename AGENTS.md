@@ -3,8 +3,8 @@
 ## Project Overview
 
 croner-site is the source of [croner.56k.guru](https://croner.56k.guru), the documentation site for every
-Croner implementation. It is built with [Lume](https://lume.land) and [Lumocs](https://github.com/Hexagon/lumocs)
-and deployed to GitHub Pages from the `main` branch. All pages are committed in `src/`: the build reads
+Croner implementation. It is built by a small Deno build (`scripts/build.ts` and `scripts/layout.ts`, using
+markdown-it and highlight.js), and deployed to GitHub Pages from the `main` branch. All pages are committed in `src/`: the build reads
 nothing from the other repositories.
 
 ## The Croner repositories
@@ -33,7 +33,7 @@ behavior. Read those, and the `CHANGELOG.md` where there is one, when syncing.
 | `src/usage/pattern.md`   | All five: pattern syntax, nicknames, per-language exceptions, and the "Options in each language" table with links to each README section |
 | `src/contributing.md`    | General; links to every repository                                                         |
 | `src/usage/index.md`, `basics.md`, `configuration.md`, `examples.md`, `src/comparison.md`, `src/migration.md` | JavaScript only, from croner's README, `docs/` (if present) and `CHANGELOG.md` |
-| `src/_data.json`         | `$CRONER_VERSION` (croner's latest released version), `nav_links` and `top_links` to the repositories |
+| `src/_data.json`         | `version` (croner's latest released version, used for `$CRONER_VERSION`), `nav` (the sidebar groups and page order) and `repos` (the repository links) |
 
 ## Sync instruction
 
@@ -46,9 +46,9 @@ anything that matters for the site into the pages above.
    the diff of README, CHANGELOG, `docs/` and the version files. The clones are in `.upstream/<name>`: read
    any other file there when the diff is not enough (e.g. `git -C .upstream/croner-cpp show FETCH_HEAD:README.md`).
 2. For each changed repository, decide what affects the site. Typical things:
-   - a new release (version file, CHANGELOG): version numbers in `src/installation.md`, `$CRONER_VERSION`
-     in `src/_data.json` for croner;
-   - API changes: the quick example in `src/index.md` must still compile/run with the current API;
+   - a new release (version file, CHANGELOG): version numbers in `src/installation.md`, `version`
+     in `src/_data.json` for croner (used for `$CRONER_VERSION`);
+   - API changes: the quick example (a tab) in `src/index.md` must still compile/run with the current API;
    - new or removed features: the implementations table (Evaluate / Schedule / Describe) and features list
      in `src/index.md`;
    - install requirements (minimum language/runtime version, optional features, package name):
@@ -57,7 +57,8 @@ anything that matters for the site into the pages above.
      language" table and that the README anchors it links to still exist. Say which implementations
      support a change rather than describing it as universal;
    - croner (JavaScript) only: the usage, comparison and migration pages. croner may still keep copies of
-     these in its `docs/`; carry over changes made there.
+     these in its `docs/`; carry over changes made there. A new page must also be added to `nav` in
+     `src/_data.json`, and a removed one taken out of it.
    Internal changes (tests, refactoring, CI) need nothing on the site.
 
    The site follows the branch in `upstream.json`: `master` (released) for croner, `main` for the others.
@@ -80,13 +81,25 @@ do not paper over it on the site.
 Requires [Deno](https://deno.com) 2.
 
 ```bash
-deno task serve   # http://localhost:8000
+deno task serve   # rebuild on change, http://localhost:8000
 deno task build   # to _site/
 deno task upstream         # what changed in the five repositories since last sync (--diff, --update)
 ```
 
-- Front matter (`title`, `parent`, `nav_order`, `has_children`) drives the Lumocs navigation.
-- `$CRONER_VERSION` in a page is replaced with the value in `src/_data.json`.
+- `nav` in `src/_data.json` sets the sidebar groups, the page order and the previous/next links. A page is listed as
+  its path in `src/`, or as `[path, label]` to show a shorter label. The build warns about pages that are not
+  listed. Front matter `title` is the page title; `nav_order`, `parent` and `has_children` are ignored.
+  `layout: home` is used by `src/index.md` only.
+- `$CRONER_VERSION` in a page is replaced with `version` in `src/_data.json`.
+- Relative links to `.md` files are rewritten to page URLs (`usage/pattern.md` becomes `/usage/pattern/`).
+- `{ .note }` or `{ .warning }` on the line after a block quote (or `{: .note }` before a paragraph) makes it a
+  callout. A leading bold line (`**Warning**`) becomes its title.
+- Code blocks get a header with the language and a copy button. ```` ```rust title="Rust" ```` sets the header text,
+  and code blocks with titles inside `<div class="tabs">` (with blank lines around them) become tabs, as in the quick
+  examples in `src/index.md`.
+- Templates are in `scripts/layout.ts`; styles, the client script (theme, tabs, copy, search), fonts and the logo are
+  in `src/assets/`. Files in `src/` that are not Markdown are copied as they are; names starting with `_` are
+  skipped. The build also writes `search.json`, `sitemap.xml` and `robots.txt`.
 - `_site/` and `.upstream/` (clones made by `deno task upstream`) are ignored by git.
 
 ## Publishing

@@ -28,7 +28,7 @@ A change to how patterns are read should be made in every implementation, so tha
 
 ## Changing this site
 
-The site is built with [Lume](https://lume.land) and [Lumocs](https://github.com/Hexagon/lumocs), and published to GitHub Pages from the `main` branch of [croner-site](https://github.com/Hexagon/croner-site).
+The site is built from Markdown by a small Deno script, and published to GitHub Pages from the `main` branch of [croner-site](https://github.com/Hexagon/croner-site).
 
 All pages are in `src/` in croner-site, and the site is built from that repository alone.
 
