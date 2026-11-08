@@ -33,6 +33,7 @@ The site is built from Markdown by a small Deno script, and published to GitHub 
 All pages are in `src/` in croner-site, and the site is built from that repository alone.
 
 -   The overview, installation, pattern, contributing and sponsorship pages are shared by all implementations.
--   The JavaScript pages (usage, comparison and migration) are also kept in [`docs/`](https://github.com/Hexagon/croner/tree/dev/docs) in the croner repository. A change there is copied into croner-site with `deno task sync`, and a change made directly in croner-site should also be made there.
+-   The usage, comparison and migration pages are for JavaScript.
+-   The site follows the implementation repositories: `deno task upstream` lists what has changed in them since the site was last synced.
 
 To build the site locally, install [Deno](https://deno.com), then run `deno task serve` in croner-site.

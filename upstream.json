@@ -1,0 +1,27 @@
+{
+  "croner": {
+    "url": "https://github.com/Hexagon/croner",
+    "branch": "master",
+    "synced": "bcce8667c9c9a95b9d880188543f9f5b70a23592"
+  },
+  "croner-rust": {
+    "url": "https://github.com/Hexagon/croner-rust",
+    "branch": "main",
+    "synced": "b46f331be4989d9b6b4ccf05a991788720a5d5e7"
+  },
+  "croner-py": {
+    "url": "https://github.com/Hexagon/croner-py",
+    "branch": "main",
+    "synced": "9236593223f795ffa513f45d84afab877dffe322"
+  },
+  "croner-dotnet": {
+    "url": "https://github.com/Hexagon/croner-dotnet",
+    "branch": "main",
+    "synced": "c14333d81cb66fa2eb69caa265c49c3e91747fb9"
+  },
+  "croner-cpp": {
+    "url": "https://github.com/Hexagon/croner-cpp",
+    "branch": "main",
+    "synced": "d91427485ad3f9581b9502ca7838aa0ca59263e1"
+  }
+}

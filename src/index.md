@@ -46,7 +46,7 @@ using Croner;
 
 var cron = Cron.Parse("30 9 * * MON-FRI");
 var tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm");
-foreach (var run in cron.IterAfter(DateTimeOffset.UtcNow, tz).Take(5))
+foreach (var run in cron.GetNextOccurrences(DateTimeOffset.UtcNow, tz).Take(5))
 {
     Console.WriteLine(run);
 }
@@ -57,10 +57,10 @@ foreach (var run in cron.IterAfter(DateTimeOffset.UtcNow, tz).Take(5))
 #include <iostream>
 
 int main() {
-  croner::Options opts;
-  opts.timezone = "Europe/Stockholm";
-  croner::Cron job("30 9 * * MON-FRI", opts);
-  for (auto run : job.next_runs(5)) std::cout << croner::to_iso_string(run) << "\n";
+  croner::CronOptions opts;
+  opts.zone = croner::locate_zone("Europe/Stockholm");
+  const croner::Cron cron("30 9 * * MON-FRI", opts);
+  for (auto run : cron.next_runs(5)) std::cout << croner::to_iso_string(run) << "\n";
 }
 ```
 

@@ -9,14 +9,11 @@ Source of [croner.56k.guru](https://croner.56k.guru), the documentation site for
 All pages are committed in `src/`, and the site is built from the `main` branch of this repository alone.
 
 - Shared by all implementations: overview, installation, pattern syntax, contributing and sponsorship.
-- JavaScript only: usage, comparison and migration. These are also kept in
-  [`docs/`](https://github.com/Hexagon/croner/tree/dev/docs) in the croner repository.
-  `deno task sync [path to croner]` copies them from a croner checkout into `src/`, and sets
-  `version` in `src/_data.json` (used for `$CRONER_VERSION` in pages) to croner's version (unless it is a prerelease).
-  Review and commit the result.
+- JavaScript only: usage, comparison and migration.
 
-How to bring changes in the five implementation repositories into the site is described in
-[AGENTS.md](AGENTS.md).
+The site follows the five implementation repositories. `deno task upstream` lists what has changed in
+each of them since the last sync (recorded in `upstream.json`); [AGENTS.md](AGENTS.md) describes how to
+bring those changes into the site, as a pull request.
 
 ## Building
 

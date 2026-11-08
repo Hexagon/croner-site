@@ -2,7 +2,7 @@
   "tasks": {
     "build": "deno run --allow-read --allow-write --allow-env scripts/build.ts",
     "serve": "deno run --allow-read --allow-write --allow-env --allow-net --watch=src/,scripts/ scripts/build.ts --serve",
-    "sync": "deno run --allow-read --allow-write scripts/sync.ts"
+    "upstream": "deno run --allow-read=. --allow-write=. --allow-run=git scripts/upstream.ts"
   },
   "imports": {
     "@std/front-matter": "jsr:@std/front-matter@^1",
