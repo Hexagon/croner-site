@@ -70,14 +70,16 @@ On Windows, which has no system time zone database, use `pip install croner[tzda
 Croner for .NET targets .NET 8 and .NET 10:
 
 ```sh
-dotnet add package Croner
+dotnet add package Croner --prerelease
 ```
+
+Croner for .NET is in preview, so `--prerelease` is needed until 1.0.0 is released. The examples on this site use the API of 1.0.0-preview.2, which renames several members of 1.0.0-preview.1 (for example `IterAfter` is now `GetNextOccurrences`), see the [changelog](https://github.com/Hexagon/croner-dotnet/blob/main/CHANGELOG.md).
 
 See [croner-dotnet](https://github.com/Hexagon/croner-dotnet) for usage.
 
 ## C++
 
-Croner for C++ is header-only and needs C++17. Add it with CMake `FetchContent`:
+Croner for C++ is header-only and needs C++17 and threads. Add it with CMake `FetchContent`:
 
 ```cmake
 include(FetchContent)

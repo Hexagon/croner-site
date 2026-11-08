@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "sync": "deno run --allow-read --allow-write scripts/sync.ts",
+    "upstream": "deno run --allow-read=. --allow-write=. --allow-run=git scripts/upstream.ts",
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
     "build": "deno task lume",
     "serve": "deno task lume -s --port=8000"

@@ -9,7 +9,7 @@ nav_order: 3
 
 All Croner implementations (JavaScript/TypeScript, Rust, Python, .NET and C++) use the same pattern syntax, described on this page. Croner is compliant with the [Open Cron Pattern Specification (OCPS)](https://github.com/open-source-cron/ocps) versions 1.0 through 1.4, with one documented deviation in the recommended DST handling (see below). The expressions are based on Vixie Cron with powerful extensions:
 
-> Options are named in the style of each language, for example `domAndDow` in JavaScript, `dom_and_dow` in Rust, Python and C++, and `DomAndDow` in .NET. See [Options in each language](#options-in-each-language) below.
+> Options are named in the style of each language, for example `domAndDow` in JavaScript and `dom_and_dow` in Rust, Python and C++. .NET uses its own names, such as `RequireBothDayFields`. See [Options in each language](#options-in-each-language) below.
 { .note }
 
 ```
@@ -85,9 +85,9 @@ The options that change how patterns are read have the same meaning in every imp
 
 | JavaScript            | Rust (`CronParser` builder) | Python                 | .NET                  | C++                    |
 |-----------------------|-----------------------------|------------------------|-----------------------|------------------------|
-| `domAndDow`           | `dom_and_dow`               | `dom_and_dow`          | `DomAndDow`           | `dom_and_dow`          |
-| `alternativeWeekdays` | `alternative_weekdays`      | `alternative_weekdays` | `AlternativeWeekdays` | `alternative_weekdays` |
-| `sloppyRanges`        | `sloppy_ranges`             | `sloppy_ranges`        | `SloppyRanges`        | `sloppy_ranges`        |
+| `domAndDow`           | `dom_and_dow`               | `dom_and_dow`          | `RequireBothDayFields` | `dom_and_dow`          |
+| `alternativeWeekdays` | `alternative_weekdays`      | `alternative_weekdays` | `QuartzWeekdays`      | `alternative_weekdays` |
+| `sloppyRanges`        | `sloppy_ranges`             | `sloppy_ranges`        | `LenientSteps`        | `sloppy_ranges`        |
 | `mode`                | `seconds`, `year`           | `mode`                 | `Seconds`, `Year`     | `mode`                 |
 | `fixedTimeRule`       |                             |                        |                       |                        |
 
