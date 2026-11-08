@@ -3,8 +3,8 @@
 Source of [croner.56k.guru](https://croner.56k.guru), the documentation site for Croner in
 [JavaScript/TypeScript](https://github.com/Hexagon/croner), [Rust](https://github.com/Hexagon/croner-rust),
 [Python](https://github.com/Hexagon/croner-py), [.NET](https://github.com/Hexagon/croner-dotnet) and
-[C++](https://github.com/Hexagon/croner-cpp). Built with [Lume](https://lume.land) and
-[Lumocs](https://github.com/Hexagon/lumocs).
+[C++](https://github.com/Hexagon/croner-cpp). Built with a single Deno script (`scripts/build.ts`):
+Markdown in, static HTML out, no client-side JavaScript framework.
 
 All pages are committed in `src/`, and the site is built from the `main` branch of this repository alone.
 
@@ -12,7 +12,7 @@ All pages are committed in `src/`, and the site is built from the `main` branch 
 - JavaScript only: usage, comparison and migration. These are also kept in
   [`docs/`](https://github.com/Hexagon/croner/tree/dev/docs) in the croner repository.
   `deno task sync [path to croner]` copies them from a croner checkout into `src/`, and sets
-  `$CRONER_VERSION` in `src/_data.json` to croner's version (unless it is a prerelease).
+  `version` in `src/_data.json` (used for `$CRONER_VERSION` in pages) to croner's version (unless it is a prerelease).
   Review and commit the result.
 
 How to bring changes in the five implementation repositories into the site is described in
@@ -23,7 +23,7 @@ How to bring changes in the five implementation repositories into the site is de
 Requires [Deno](https://deno.com) 2.
 
 ```sh
-deno task serve   # http://localhost:8000
+deno task serve   # rebuild on change, http://localhost:8000
 deno task build   # to _site/
 ```
 

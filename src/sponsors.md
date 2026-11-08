@@ -17,6 +17,6 @@ Your sponsorship directly supports my ongoing efforts to enhance and improve Cro
 
 You can support by **monthly** and **one-time** sponsorship tiers at [github.com/sponsors/Hexagon](https://github.com/sponsors/Hexagon?frequency=one-time&sponsor=Hexagon)
 
-- **Monthly Tiers**: These tiers offer benefits such listing in Croner's README, priority issue resolution, and more.
+- **Monthly Tiers**: These tiers offer benefits such as a listing in Croner's README, priority issue resolution, and more.
 
-- **One-Time Contributions**: More relaxed option with buying Hexagon anything from a coffe and up. Each contribution, no matter the size, ensures continued dedication to the project.
+- **One-Time Contributions**: A more relaxed option: buy Hexagon anything from a coffee and up. Each contribution, no matter the size, ensures continued dedication to the project.

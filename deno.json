@@ -1,12 +1,16 @@
 {
   "tasks": {
-    "sync": "deno run --allow-read --allow-write scripts/sync.ts",
-    "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
-    "build": "deno task lume",
-    "serve": "deno task lume -s --port=8000"
+    "build": "deno run --allow-read --allow-write --allow-env scripts/build.ts",
+    "serve": "deno run --allow-read --allow-write --allow-env --allow-net --watch=src/,scripts/ scripts/build.ts --serve",
+    "sync": "deno run --allow-read --allow-write scripts/sync.ts"
   },
   "imports": {
-    "lume/": "https://deno.land/x/lume@v3.2.5/",
-    "lumocs/": "https://deno.land/x/lumocs@0.2.0/"
-  }
+    "@std/front-matter": "jsr:@std/front-matter@^1",
+    "@std/fs": "jsr:@std/fs@^1",
+    "@std/http": "jsr:@std/http@^1",
+    "@std/path": "jsr:@std/path@^1",
+    "highlight.js": "npm:highlight.js@^11",
+    "markdown-it": "npm:markdown-it@^14"
+  },
+  "fmt": { "lineWidth": 120 }
 }

@@ -18,7 +18,7 @@ All Croner implementations (JavaScript/TypeScript, Rust, Python, .NET and C++) u
 // │ │ ┌──────────── hour (0 - 23)
 // │ │ │ ┌────────── day of month (1 - 31)
 // │ │ │ │ ┌──────── month (1 - 12, JAN-DEC)
-// │ │ │ │ │ ┌────── day of week (0 - 6, SUN-Mon) 
+// │ │ │ │ │ ┌────── day of week (0 - 6, SUN-SAT)
 // │ │ │ │ │ │       (0 to 6 are Sunday to Saturday; 7 is Sunday, the same as 0)
 // │ │ │ │ │ │
 // * * * * * *
@@ -56,15 +56,15 @@ All Croner implementations (JavaScript/TypeScript, Rust, Python, .NET and C++) u
 | Hours        | Yes      | 0-23           | * , - / ?                  |                                       |
 | Day of Month | Yes      | 1-31           | * , - / ? L W              | L = last day, W = nearest weekday     |
 | Month        | Yes      | 1-12 or JAN-DEC| * , - / ?                  |                                       |
-| Day of Week  | Yes      | 0-7 or SUN-MON | * , - / ? L # +            | 0 and 7 = Sunday (standard mode)<br>1-7 = Sunday-Saturday (Quartz mode with the `alternativeWeekdays` option)<br># = nth occurrence (e.g. MON#2)<br>+ = AND logic modifier (OCPS 1.4) |
+| Day of Week  | Yes      | 0-7 or SUN-SAT | * , - / ? L # +            | 0 and 7 = Sunday (standard mode)<br>1-7 = Sunday-Saturday (Quartz mode with the `alternativeWeekdays` option)<br># = nth occurrence (e.g. MON#2)<br>+ = AND logic modifier (OCPS 1.4) |
 | Year         | Optional | 1-9999         | * , - /                    | OCPS 1.2: Optional, defaults to *. See the year range above |
 
-> Weekday and month names are case-insensitive. Both `MON` and `mon` work.
-> When using `L` in the Day of Week field with a range, it affects all specified weekdays. For example, `5-6#L` means the last Friday and Saturday in the month.
-> The `#` character specifies the "nth" weekday of the month. For example, `5#2` = second Friday, `MON#1` = first Monday.
-> The `W` character operates within the current month and won't cross month boundaries. If the 1st is a Saturday, `1W` matches Monday the 3rd.
-> The `+` modifier (OCPS 1.4) enforces AND logic: `0 12 1 * +MON` only runs when the 1st is also a Monday.
-> **Quartz mode**: Enable the `alternativeWeekdays` option to use Quartz-style weekday numbering (1=Sunday, 2=Monday, ..., 7=Saturday) instead of the standard format (0=Sunday, 1=Monday, ..., 6=Saturday). This is useful for compatibility with Quartz cron expressions.
+> - Weekday and month names are case-insensitive. Both `MON` and `mon` work.
+> - When using `L` in the Day of Week field with a range, it affects all specified weekdays. For example, `5-6#L` means the last Friday and Saturday in the month.
+> - The `#` character specifies the "nth" weekday of the month. For example, `5#2` = second Friday, `MON#1` = first Monday.
+> - The `W` character operates within the current month and won't cross month boundaries. If the 1st is a Saturday, `1W` matches Monday the 3rd.
+> - The `+` modifier (OCPS 1.4) enforces AND logic: `0 12 1 * +MON` only runs when the 1st is also a Monday.
+> - **Quartz mode**: Enable the `alternativeWeekdays` option to use Quartz-style weekday numbering (1=Sunday, 2=Monday, ..., 7=Saturday) instead of the standard format (0=Sunday, 1=Monday, ..., 6=Saturday). This is useful for compatibility with Quartz cron expressions.
 
 { .note }
 

@@ -3,10 +3,11 @@ title: "Overview"
 nav_order: 1
 ---
 
-<p align="center">
-<img class="logo" src="https://cdn.jsdelivr.net/gh/hexagon/croner@master/croner.png" alt="Croner" width="150" height="150"><br>
-Trigger functions or evaluate cron expressions. No dependencies. All features. JavaScript/TypeScript, Rust, Python, .NET and C++. <br><br>Try the JavaScript version live on <a href="https://jsfiddle.net/hexag0n/hoa8kwsb/">jsfiddle</a>.<br>
-</p>
+# Croner
+
+<p class="lead">Trigger functions or evaluate cron expressions. No dependencies. All features. In JavaScript/TypeScript, Rust, Python, .NET and C++.</p>
+
+Try the JavaScript version live on [JSFiddle](https://jsfiddle.net/hexag0n/hoa8kwsb/), or go to [Installation](installation.md).
 
 ## Implementations
 
@@ -45,7 +46,7 @@ The JavaScript version also:
 
 **The next five weekdays at 09:30 in Stockholm**, in each language.
 
-JavaScript / TypeScript:
+### JavaScript / TypeScript
 
 ```ts
 import { Cron } from "croner";
@@ -54,7 +55,9 @@ const job = new Cron("30 9 * * MON-FRI", { timezone: "Europe/Stockholm" });
 console.log(job.nextRuns(5));
 ```
 
-Rust (with the `chrono-tz` crate for the time zone):
+### Rust
+
+With the `chrono-tz` crate for the time zone:
 
 ```rust
 use chrono::Utc;
@@ -69,7 +72,7 @@ for run in cron.iter_after(now).take(5) {
 }
 ```
 
-Python:
+### Python
 
 ```python
 from croner import Cron
@@ -78,7 +81,7 @@ job = Cron("30 9 * * MON-FRI", timezone="Europe/Stockholm")
 print(job.next_runs(5))
 ```
 
-C# (.NET):
+### C# (.NET)
 
 ```csharp
 using Croner;
@@ -91,7 +94,7 @@ foreach (var run in cron.IterAfter(DateTimeOffset.UtcNow, tz).Take(5))
 }
 ```
 
-C++:
+### C++
 
 ```cpp
 #include <croner/croner.hpp>

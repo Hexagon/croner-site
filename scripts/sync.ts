@@ -1,13 +1,13 @@
 // Copies the JavaScript documentation pages from a croner checkout into src/, and sets
-// $CRONER_VERSION to the version in croner's package.json (unless it is a prerelease).
+// `version` in src/_data.json (used for $CRONER_VERSION) to the version in croner's package.json (unless it is a prerelease).
 // The copied pages are committed here: the site is built from this repository alone.
 // Review the diff before committing. See AGENTS.md for syncing all implementations.
 //
 // Usage: deno task sync [path to a croner checkout]
 // The path defaults to ./croner, then ../croner.
 
-import { copy, exists, walk } from "jsr:@std/fs@^1";
-import { join, relative } from "jsr:@std/path@^1";
+import { copy, exists, walk } from "@std/fs";
+import { join, relative } from "@std/path";
 
 const candidates = Deno.args[0] ? [Deno.args[0]] : ["croner", "../croner"];
 let croner: string | undefined;
@@ -44,9 +44,9 @@ const { version } = JSON.parse(await Deno.readTextFile(join(croner, "package.jso
 const dataFile = join("src", "_data.json");
 const data = JSON.parse(await Deno.readTextFile(dataFile));
 if (version.includes("-")) {
-  console.log(`Kept $CRONER_VERSION at ${data.substitute.$CRONER_VERSION} (croner is at prerelease ${version})`);
-} else if (data.substitute.$CRONER_VERSION !== version) {
-  data.substitute.$CRONER_VERSION = version;
+  console.log(`Kept $CRONER_VERSION at ${data.version} (croner is at prerelease ${version})`);
+} else if (data.version !== version) {
+  data.version = version;
   await Deno.writeTextFile(dataFile, JSON.stringify(data, null, 2) + "\n");
   console.log(`Set $CRONER_VERSION to ${version}`);
 }

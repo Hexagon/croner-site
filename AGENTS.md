@@ -3,8 +3,8 @@
 ## Project Overview
 
 croner-site is the source of [croner.56k.guru](https://croner.56k.guru), the documentation site for every
-Croner implementation. It is built with [Lume](https://lume.land) and [Lumocs](https://github.com/Hexagon/lumocs)
-and deployed to GitHub Pages from the `main` branch. All pages are committed in `src/`: the build reads
+Croner implementation. It is built by one Deno script, `scripts/build.ts` (markdown-it and highlight.js, no
+framework), and deployed to GitHub Pages from the `main` branch. All pages are committed in `src/`: the build reads
 nothing from the other repositories.
 
 ## The Croner repositories
@@ -32,7 +32,7 @@ behavior. Read those, and the `CHANGELOG.md` where there is one, when syncing.
 | `src/usage/pattern.md`   | All five: pattern syntax, nicknames, per-language exceptions, and the "Options in each language" table with links to each README section |
 | `src/contributing.md`    | General; links to every repository                                                         |
 | `src/usage/index.md`, `basics.md`, `configuration.md`, `examples.md`, `src/comparison.md`, `src/migration.md` | JavaScript only: copies of `docs/` in croner (see below) |
-| `src/_data.json`         | `$CRONER_VERSION` (croner's latest released version), `nav_links` and `top_links` to the repositories |
+| `src/_data.json`         | `version` (croner's latest released version, used for `$CRONER_VERSION`) and `repos`, the repository links in the sidebar |
 
 ## Sync instruction
 
@@ -46,7 +46,7 @@ croner-site and open a pull request; never push directly to `main`.
    and public options with what the pages above say (`git log` of croner-site shows the last sync).
 3. JavaScript pages: run `deno task sync ../croner` with croner checked out at the branch to publish
    (normally `master`). It copies `docs/**/*.md` (except `docs/README.md`) into `src/` and updates
-   `$CRONER_VERSION` for a release version. Review the diff. Pages that exist in `src/` but no longer in
+   `version` in `src/_data.json` for a release version. Review the diff. Pages that exist in `src/` but no longer in
    croner's `docs/` must be removed by hand. If croner's `docs/` still has the old layout (`docs/src/`), the
    script stops: copy the changed JavaScript pages by hand instead, keeping the titles, `parent` and
    `nav_order` already used in `src/`.
@@ -71,13 +71,18 @@ do not paper over it on the site.
 Requires [Deno](https://deno.com) 2.
 
 ```bash
-deno task serve   # http://localhost:8000
+deno task serve   # rebuild on change, http://localhost:8000
 deno task build   # to _site/
 deno task sync ../croner   # copy the JavaScript pages from a croner checkout
 ```
 
-- Front matter (`title`, `parent`, `nav_order`, `has_children`) drives the Lumocs navigation.
-- `$CRONER_VERSION` in a page is replaced with the value in `src/_data.json`.
+- Front matter (`title`, `nav_order`, and `parent` with the title of the parent page) drives the sidebar.
+  `has_children` (used in croner's `docs/`) is accepted and ignored.
+- `$CRONER_VERSION` in a page is replaced with `version` in `src/_data.json`.
+- Relative links to `.md` files are rewritten to page URLs (`usage/pattern.md` becomes `/usage/pattern/`).
+- `{ .note }` or `{ .warning }` on the line after a block quote (or `{: .note }` before a paragraph) makes it a callout.
+- The page layout is the `layout` function in `scripts/build.ts`; styles are in `src/style.css`. Files in `src/` that
+  are not Markdown are copied as they are; names starting with `_` are skipped.
 - `_site/` and a `/croner/` checkout are ignored by git.
 
 ## Publishing
