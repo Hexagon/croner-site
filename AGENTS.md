@@ -59,6 +59,11 @@ anything that matters for the site into the pages above.
    - croner (JavaScript) only: the usage, comparison and migration pages. croner may still keep copies of
      these in its `docs/`; carry over changes made there.
    Internal changes (tests, refactoring, CI) need nothing on the site.
+
+   The site follows the branch in `upstream.json`: `master` (released) for croner, `main` for the others.
+   When `main` is ahead of the published package (compare the version file with the package registry),
+   follow `main` but say so in the pull request, and on the site where a copied example would fail.
+   Check changed examples against the code: compile or run them where you can.
 3. Make the changes on a branch of croner-site (never push to `main`), build with `deno task build`, and
    fix any errors.
 4. Run `deno task upstream --update` to record the commits you synced to in `upstream.json`, and commit it

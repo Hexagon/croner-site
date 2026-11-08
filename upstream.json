@@ -17,11 +17,11 @@
   "croner-dotnet": {
     "url": "https://github.com/Hexagon/croner-dotnet",
     "branch": "main",
-    "synced": "dc0499451238bac1fab0e204fc7eb791dd355265"
+    "synced": "c14333d81cb66fa2eb69caa265c49c3e91747fb9"
   },
   "croner-cpp": {
     "url": "https://github.com/Hexagon/croner-cpp",
     "branch": "main",
-    "synced": "8bf86754c5da50d7e9fc72ad6ccbd0bb8a8fbceb"
+    "synced": "d91427485ad3f9581b9502ca7838aa0ca59263e1"
   }
 }
