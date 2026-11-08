@@ -1,16 +1,12 @@
 name: Deploy Lumocs with GitHub Pages
 
+# The site is built from this repository alone (all pages are committed in src/).
+# Pull requests and other branches only build; pushes to main also deploy.
 on:
   push:
     branches: [main]
 
-  # Picks up changes to the JavaScript pages in the croner repository
-  schedule:
-    - cron: "17 3 * * *"
-
-  # Can be sent from the croner repository on release, with a token that may dispatch here
-  repository_dispatch:
-    types: [croner-release]
+  pull_request:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,7 +20,7 @@ permissions:
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
+  group: pages-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -35,22 +31,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Checkout croner (JavaScript pages)
-        uses: actions/checkout@v7
-        with:
-          repository: Hexagon/croner
-          path: croner
-
       - name: Setup Pages
+        if: github.ref == 'refs/heads/main'
         uses: actions/configure-pages@v6
 
       - name: Install Deno
         uses: denoland/setup-deno@v2
         with:
           deno-version: "v2.x"
-
-      - name: Copy JavaScript pages
-        run: deno task sync
 
       - name: Run Lume
         run: deno task build
@@ -62,6 +50,7 @@ jobs:
 
   # Deployment job
   deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

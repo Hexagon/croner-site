@@ -1,8 +1,3 @@
 _site/
 # Checkout of the croner repository, used by `deno task sync`
 /croner/
-# JavaScript pages, copied from croner/docs by `deno task sync`
-/src/usage/*.md
-!/src/usage/pattern.md
-/src/comparison.md
-/src/migration.md

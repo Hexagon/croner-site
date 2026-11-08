@@ -30,7 +30,9 @@ A change to how patterns are read should be made in every implementation, so tha
 
 The site is built with [Lume](https://lume.land) and [Lumocs](https://github.com/Hexagon/lumocs), and published to GitHub Pages from the `main` branch of [croner-site](https://github.com/Hexagon/croner-site).
 
--   The overview, installation, pattern, contributing and sponsorship pages are in `src/` in croner-site.
--   The JavaScript pages (usage, comparison and migration) are in [`docs/`](https://github.com/Hexagon/croner/tree/dev/docs) in the croner repository, and are copied in when the site is built. Change them there.
+All pages are in `src/` in croner-site, and the site is built from that repository alone.
 
-To build the site locally, install [Deno](https://deno.com), clone croner next to croner-site, then run `deno task sync` and `deno task serve` in croner-site.
+-   The overview, installation, pattern, contributing and sponsorship pages are shared by all implementations.
+-   The JavaScript pages (usage, comparison and migration) are also kept in [`docs/`](https://github.com/Hexagon/croner/tree/dev/docs) in the croner repository. A change there is copied into croner-site with `deno task sync`, and a change made directly in croner-site should also be made there.
+
+To build the site locally, install [Deno](https://deno.com), then run `deno task serve` in croner-site.

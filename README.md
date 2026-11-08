@@ -6,26 +6,28 @@ Source of [croner.56k.guru](https://croner.56k.guru), the documentation site for
 [C++](https://github.com/Hexagon/croner-cpp). Built with [Lume](https://lume.land) and
 [Lumocs](https://github.com/Hexagon/lumocs).
 
-- `src/` has the pages shared by all implementations: overview, installation, pattern syntax,
-  contributing and sponsorship.
-- The JavaScript pages (usage, comparison and migration) live in
+All pages are committed in `src/`, and the site is built from the `main` branch of this repository alone.
+
+- Shared by all implementations: overview, installation, pattern syntax, contributing and sponsorship.
+- JavaScript only: usage, comparison and migration. These are also kept in
   [`docs/`](https://github.com/Hexagon/croner/tree/dev/docs) in the croner repository.
-  `deno task sync` copies them into `src/` (they are ignored by git here), and sets
-  `$CRONER_VERSION` in `src/_data.json` to the version in croner's `package.json`.
+  `deno task sync [path to croner]` copies them from a croner checkout into `src/`, and sets
+  `$CRONER_VERSION` in `src/_data.json` to croner's version (unless it is a prerelease).
+  Review and commit the result.
+
+How to bring changes in the five implementation repositories into the site is described in
+[AGENTS.md](AGENTS.md).
 
 ## Building
 
 Requires [Deno](https://deno.com) 2.
 
 ```sh
-git clone https://github.com/Hexagon/croner ../croner   # or pass another path to sync
-deno task sync
 deno task serve   # http://localhost:8000
 deno task build   # to _site/
 ```
 
 ## Publishing
 
-`.github/workflows/pages.yml` builds the site with the JavaScript pages from croner's default
-branch and deploys it to GitHub Pages. It runs on pushes to `main`, once a day, on demand, and
-on a `croner-release` repository dispatch.
+`.github/workflows/pages.yml` builds the site on pull requests, and builds and deploys it to GitHub
+Pages on pushes to `main` (or when run manually on `main`).
