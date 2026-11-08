@@ -10,7 +10,7 @@ nav_order: 3
 
 <!-- TOC -->
 
-### Find dates
+## Find dates
 
 ```ts
 // Find next month
@@ -27,7 +27,7 @@ console.log("Next month ending with a sunday: " +  nextSunLastOfMonth.toLocaleDa
 console.log("Next last sunday of month: " +  nextLastSundayOfMonth.toLocaleDateString());
 ```
 
-### List previous scheduled runs
+## List previous scheduled runs
 
 ```ts
 // Get previous 5 scheduled times (useful for audit/logging)
@@ -47,7 +47,7 @@ previousRuns.forEach((run, i) => {
 //   5. 2024-01-11T00:00:00.000Z
 ```
 
-### Stateful iterator (enumerate)
+## Stateful iterator (enumerate)
 
 `enumerate()` returns a `CronIterator` that implements the ECMAScript Iterator and
 Iterable protocols. Use it with `for...of` loops, destructuring, or any other construct
@@ -87,7 +87,7 @@ for (const date of finite.enumerate(start)) {
 }
 ```
 
-### Get run-once date
+## Get run-once date
 
 ```ts
 // When creating a job with a specific date/time, you can retrieve the original date
@@ -101,7 +101,7 @@ if (onceDate) {
 }
 ```
 
-### Allow jobs scheduled in the past
+## Allow jobs scheduled in the past
 
 ```ts
 // By default, jobs scheduled more than 1 second in the past will not run
@@ -120,7 +120,7 @@ const missedJob = new Cron(new Date(Date.now() - 60000), { allowPast: true }, ()
 });
 ```
 
-### Job controls
+## Job controls
 ```ts
 const job = new Cron('* * * * * *', (self) => {
 	console.log('This will run every second. Pause on second 10. Resume on 15. And quit on 20.');
@@ -134,7 +134,7 @@ new Cron('15 * * * * *', {maxRuns: 1}, () => job.resume());
 new Cron('20 * * * * *', {maxRuns: 1}, () => job.stop());
 ```
 
-### Options
+## Options
 ```ts
 import { Cron } from "./dist/croner.js";
 
@@ -153,7 +153,7 @@ const job = new Cron(
 console.log('Will run first time at', job.nextRun().toLocaleString());
 ```
 
-### Interval
+## Interval
 ```ts
 // Trigger on specific interval combined with cron expression
 new Cron('* * 7-16 * * MON-FRI', { interval: 90 }, function () {
@@ -161,7 +161,7 @@ new Cron('* * 7-16 * * MON-FRI', { interval: 90 }, function () {
 });
 ```
 
-### Passing a context
+## Passing a context
 ```ts
 const data = {
 	what: "stuff"
@@ -178,7 +178,7 @@ new Cron('*/5 * * * * *', { context: data }, (self, context) => {
 });
 ```
 
-### Fire on a specific date/time
+## Fire on a specific date/time
 ```ts
 // A javascript date, or a ISO 8601 local time string can be passed, to fire a function once. 
 // Always specify which timezone the ISO 8601 time string has with the timezone option.
@@ -193,7 +193,7 @@ if (job.nextRun() === null) {
 }
 ```
 
-### Time zone
+## Time zone
 ```ts
 let job = new Cron("0 0 14 * * *", { timezone: "Europe/Stockholm" }, () => {
 	console.log('This will every day at 14:00 in time zone Europe/Stockholm');
@@ -207,7 +207,7 @@ if (job.nextRun() === null) {
 }
 ```
 
-### Naming jobs
+## Naming jobs
 
 If you provide a name for the job using the option { name: '...' }, a reference to the job will be stored in the exported array `scheduledJobs`. Naming a job makes it accessible throughout your application.
 
@@ -255,7 +255,7 @@ setTimeout(() => {
 
 ```
 
-### Act at completion
+## Act at completion
 
 ```ts
 // Start a job firing once each 5th second, run at most 3 times
@@ -279,7 +279,7 @@ if (!job.nextRun() && !job.previousRun()) {
 }
 ```
 
-### Error handling
+## Error handling
 
 ```ts
 
@@ -297,7 +297,7 @@ const job = new Cron("* * * * * *", { catch: errorHandler }, (job) => {
 
 ```
 
-### Overrun protection
+## Overrun protection
 
 ```ts
 // Demo blocking function

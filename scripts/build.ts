@@ -86,11 +86,11 @@ md.renderer.rules.fence = (tokens, i) => {
     `<pre><code class="language-${esc(lang || "text")}">${code}</code></pre></div>\n`;
 };
 
-// Callouts. A leading bold line (`**Warning**<br>`, or `**Warning**` and a line break) becomes the title.
+// Callouts. A leading bold line (`**Warning**` and a line break) or bold label (`**Deviation:** text`) becomes the title.
 const callout = (cls: string, inner: string) => {
   let title = cls[0].toUpperCase() + cls.slice(1);
-  inner = inner.replace(/^<p><strong>([^<]+)<\/strong>(?:<br>)?\n/, (_, t) => {
-    title = t.replace(/[:]$/, "");
+  inner = inner.replace(/^<p><strong>([^<]+?):?<\/strong>(?:<br>\n|\n|:? +)/, (_, t) => {
+    title = t;
     return "<p>";
   });
   return `<div class="callout ${cls}"><p class="callout-title">${esc(title)}</p>\n${inner}</div>\n`;
