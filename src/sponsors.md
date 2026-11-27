@@ -1,6 +1,6 @@
 ---
 title: "Sponsorship"
-nav_order: 8
+nav_order: 5
 ---
 
 # Supporting Croner through Sponsorship

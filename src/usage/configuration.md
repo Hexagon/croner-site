@@ -1,7 +1,7 @@
 ---
 title: "Configuration"
-parent: "Usage (JavaScript)"
-nav_order: 3
+parent: Usage (JavaScript)
+nav_order: 2
 ---
 
 # Configuration
@@ -30,7 +30,6 @@ nav_order: 3
 | mode         | "auto"         | string         | Controls how the cron pattern field count is interpreted. Options: `"auto"` (detect automatically), `"5-part"` (minute-level), `"6-part"` (second-level), `"7-part"` (second+year), `"5-or-6-parts"`, `"6-or-7-parts"`. |
 | sloppyRanges | false          | boolean        | If true, allows non-standard stepping formats for backward compatibility (e.g. `/10`, `5/5`, `30/30`). When false (default), only `*/step` or `min-max/step` formats are allowed. |
 
-> **Warning**
+> [!WARNING]
 > Unreferencing timers (option `unref`) is only supported by Node.js and Deno. 
 > Browsers have not yet implemented this feature, and it does not make sense to use it in a browser environment.
-{ .warning }

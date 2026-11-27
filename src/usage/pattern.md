@@ -1,6 +1,6 @@
 ---
 title: "Pattern"
-nav_order: 3
+nav_order: 2
 ---
 
 # Pattern
@@ -9,8 +9,8 @@ nav_order: 3
 
 All Croner implementations (JavaScript/TypeScript, Rust, Python, .NET and C++) use the same pattern syntax, described on this page. Croner is compliant with the [Open Cron Pattern Specification (OCPS)](https://github.com/open-source-cron/ocps) versions 1.0 through 1.4, with one documented deviation in the recommended DST handling (see below). The expressions are based on Vixie Cron with powerful extensions:
 
+> [!NOTE]
 > Options are named in the style of each language, for example `domAndDow` in JavaScript and `dom_and_dow` in Rust, Python and C++. .NET uses its own names, such as `RequireBothDayFields`. See [Options in each language](#options-in-each-language) below.
-{ .note }
 
 ```
 // ┌──────────────── (optional) second (0 - 59)
@@ -38,13 +38,13 @@ All Croner implementations (JavaScript/TypeScript, Rust, Python, .NET and C++) u
 	-   *+*: Explicit AND logic modifier. Prefix the day-of-week field with `+` to require both day-of-month AND day-of-week to match. Example: `0 12 1 * +MON` only triggers when the 1st is also a Monday.
 	-   *?*: Wildcard alias (behaves identically to `*`). **Non-portable**: Its use is discouraged in patterns intended for cross-system use. JavaScript, Python and C++ accept it in every field. Rust and .NET accept it only in day-of-month and day-of-week.
 	-   DST handling, the same in every implementation and based on Vixie cron, which deviates from OCPS 1.4 §4.3.1 (see below):
-		-   **Fixed-time jobs**, with a single value in each of seconds, minutes and hours (e.g. `0 30 2 * * *`): A time that occurs twice (DST fall back) runs once, at the first occurrence. A time that doesn't exist (DST spring forward) runs at the first valid time after the gap, on the same day.
+		-   **Fixed-time jobs**, by default those with a single value in each of seconds, minutes and hours (e.g. `0 30 2 * * *`): A time that occurs twice (DST fall back) runs once, at the first occurrence. A time that doesn't exist (DST spring forward) runs at the first valid time after the gap. In JavaScript that has to be on the same day. In Rust, Python and .NET it is enough that the date matches the day, month and year fields, so when a gap ends at midnight the job can run at 00:00 the next day: `30 23 * * *` in `America/Nuuk` runs at 2024-03-31 00:00, while `30 23 30 * *` has no run in March 2024.
 		-   **Interval jobs**, with a wildcard, step, range or list in seconds, minutes or hours (e.g. `*/5 * * * *` or `0 30 1,2 * * *`): A time that occurs twice runs on both occurrences, so the job keeps running through the repeated hour. A time that doesn't exist is skipped.
-		-   Which jobs are fixed-time jobs differs from Vixie cron. Vixie cron treats a job as wild only when its minute or hour field starts with `*`, so a list or range (e.g. `30 2,14 * * *`) is a fixed-time job there, but an interval job in Croner.
+		-   Which jobs are fixed-time jobs differs from Vixie cron. Vixie cron treats a job as wild only when its minute or hour field starts with `*`, so a list or range (e.g. `30 2,14 * * *`) is a fixed-time job there, but an interval job in Croner by default. JavaScript, Rust, Python and .NET have an option, `fixedTimeRule` (see [Options in each language](#options-in-each-language)), whose value `no-wildcard` makes every job without a wildcard (`*` or `?`) or step in seconds, minutes and hours a fixed-time job, closer to Vixie cron. Rust, Python and .NET also have `all`, which makes every job a fixed-time job, as in croner 2.x. C++ has no such option.
 		-   Searches for next and previous runs move in real time. They never return a time they have passed, and cover the first pass through a repeated hour before the second.
 
+> [!NOTE]
 > **Deviation from OCPS 1.4:** OCPS 1.4 §4.3.1 recommends that every job skips times in a DST gap, and runs only once when a time occurs twice. The same section asks implementations to align with Vixie cron, which runs interval jobs on both occurrences and runs fixed-time jobs after a gap. All Croner implementations follow Vixie cron, so that they schedule the same. They are stricter than Vixie cron about which jobs are fixed-time jobs, see above.
-{ .note }
 
 *   The implementations that schedule jobs (JavaScript, Python, .NET and C++) can also run a function once, at a date. JavaScript and Python take a date object or an ISO 8601 formatted string instead of the pattern. C++ uses `croner::Cron::once()`, with a time point or an ISO 8601 string, and .NET a `CronJob` constructor that takes a `DateTimeOffset`. An ISO 8601 string without an offset is read as local time in the job's time zone.
 
@@ -60,14 +60,16 @@ All Croner implementations (JavaScript/TypeScript, Rust, Python, .NET and C++) u
 | Day of Week  | Yes      | 0-7 or SUN-SAT | * , - / ? L # +            | 0 and 7 = Sunday (standard mode)<br>1-7 = Sunday-Saturday (Quartz mode with the `alternativeWeekdays` option)<br># = nth occurrence (e.g. MON#2)<br>+ = AND logic modifier (OCPS 1.4) |
 | Year         | Optional | 1-9999         | * , - /                    | OCPS 1.2: Optional, defaults to *. See the year range above |
 
+> [!NOTE]
 > - Weekday and month names are case-insensitive. Both `MON` and `mon` work.
+> - In Rust, Python and .NET a weekday or month name has to stand alone: `SUN6`, `JANFEB` and `*/FRI` are errors, while `MON-FRI/2`, `JAN,FEB` and `FRI#2` work. `SUN-SUN` is Sunday only.
+> - In Rust, Python and .NET, `L` and `LW` can be combined in a day-of-month list: `L,LW` runs on the last day and on the last weekday of the month.
+> - In Rust, Python and .NET, with Quartz weekday numbering, a day-of-week range whose end is before its start wraps around the week: `SAT-SUN` is Saturday and Sunday, `FRI-MON` Friday to Monday. JavaScript rejects these.
 > - When using `L` in the Day of Week field with a range, it affects all specified weekdays. For example, `5-6#L` means the last Friday and Saturday in the month.
 > - The `#` character specifies the "nth" weekday of the month. For example, `5#2` = second Friday, `MON#1` = first Monday.
 > - The `W` character operates within the current month and won't cross month boundaries. If the 1st is a Saturday, `1W` matches Monday the 3rd.
 > - The `+` modifier (OCPS 1.4) enforces AND logic: `0 12 1 * +MON` only runs when the 1st is also a Monday.
 > - **Quartz mode**: Enable the `alternativeWeekdays` option to use Quartz-style weekday numbering (1=Sunday, 2=Monday, ..., 7=Saturday) instead of the standard format (0=Sunday, 1=Monday, ..., 6=Saturday). This is useful for compatibility with Quartz cron expressions.
-
-{ .note }
 
 **OCPS 1.1**: Predefined schedule nicknames are supported:
 
@@ -90,5 +92,6 @@ The options that change how patterns are read have the same meaning in every imp
 | `alternativeWeekdays` | `alternative_weekdays`      | `alternative_weekdays` | `QuartzWeekdays`      | `alternative_weekdays` |
 | `sloppyRanges`        | `sloppy_ranges`             | `sloppy_ranges`        | `LenientSteps`        | `sloppy_ranges`        |
 | `mode`                | `seconds`, `year`           | `mode`                 | `Seconds`, `Year`     | `mode`                 |
+| `fixedTimeRule`       | `fixed_time_rule`           | `fixed_time_rule`      | `FixedTimeRule`       | (none)                 |
 
-In Rust these are set on the `CronParser` builder, and in .NET on `CronParserOptions`. See the documentation of each implementation for all options: [JavaScript](configuration.md), [Rust](https://github.com/Hexagon/croner-rust#configuration), [Python](https://github.com/Hexagon/croner-py#options), [.NET](https://github.com/Hexagon/croner-dotnet#evaluating-patterns-cron) and [C++](https://github.com/Hexagon/croner-cpp#options).
+In Rust these are set on the `CronParser` builder, and in .NET on `CronParserOptions`. See the documentation of each implementation for all options: [JavaScript](/usage/configuration/), [Rust](https://github.com/Hexagon/croner-rust#configuration), [Python](https://github.com/Hexagon/croner-py#options), [.NET](https://github.com/Hexagon/croner-dotnet#evaluating-patterns-cron) and [C++](https://github.com/Hexagon/croner-cpp#options).

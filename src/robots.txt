@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://croner.56k.guru/sitemap.xml

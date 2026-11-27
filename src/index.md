@@ -1,7 +1,6 @@
 ---
 title: "Overview"
-nav_order: 1
-layout: home
+nav_order: 0
 ---
 
 # Croner
@@ -12,16 +11,16 @@ layout: home
 
 The next five weekdays at 09:30 in Stockholm, in each language. The Rust example uses the `chrono-tz` crate for the time zone.
 
-<div class="tabs">
+<div class="tabs" data-labels="JavaScript,Rust,Python,.NET,C++">
 
-```ts title="JavaScript"
+```ts
 import { Cron } from "croner";
 
 const job = new Cron("30 9 * * MON-FRI", { timezone: "Europe/Stockholm" });
 console.log(job.nextRuns(5));
 ```
 
-```rust title="Rust"
+```rust
 use chrono::Utc;
 use chrono_tz::Europe::Stockholm;
 use croner::Cron;
@@ -34,14 +33,14 @@ for run in cron.iter_after(now).take(5) {
 }
 ```
 
-```python title="Python"
+```python
 from croner import Cron
 
 job = Cron("30 9 * * MON-FRI", timezone="Europe/Stockholm")
 print(job.next_runs(5))
 ```
 
-```csharp title=".NET"
+```csharp
 using Croner;
 
 var cron = Cron.Parse("30 9 * * MON-FRI");
@@ -52,7 +51,7 @@ foreach (var run in cron.GetNextOccurrences(DateTimeOffset.UtcNow, tz).Take(5))
 }
 ```
 
-```cpp title="C++"
+```cpp
 #include <croner/croner.hpp>
 #include <iostream>
 
@@ -68,7 +67,7 @@ int main() {
 
 ## Implementations
 
-Croner is available for several languages. All implementations use the same [pattern](usage/pattern.md) syntax and the same rules for daylight saving time. Where they differ, for example in which fields accept `?`, the Pattern page says so.
+Croner is available for several languages. All implementations use the same [pattern](/usage/pattern/) syntax and the same rules for daylight saving time. Where they differ, for example in which fields accept `?`, the Pattern page says so.
 
 | Language                  | Repository                                                  | Package                                                                                          | Evaluate | Schedule | Describe |
 |---------------------------|-------------------------------------------------------------|--------------------------------------------------------------------------------------------------|:--------:|:--------:|:--------:|
@@ -76,7 +75,7 @@ Croner is available for several languages. All implementations use the same [pat
 | Rust                      | [croner-rust](https://github.com/Hexagon/croner-rust)       | [crates.io](https://crates.io/crates/croner)                                                     |    ✓     |          |    ✓     |
 | Python                    | [croner-py](https://github.com/Hexagon/croner-py)           | [PyPI](https://pypi.org/project/croner/)                                                         |    ✓     |    ✓     |    ✓     |
 | .NET                      | [croner-dotnet](https://github.com/Hexagon/croner-dotnet)   | [NuGet](https://www.nuget.org/packages/Croner)                                                   |    ✓     |    ✓     |    ✓     |
-| C++                       | [croner-cpp](https://github.com/Hexagon/croner-cpp)         | Header-only, see [Installation](installation.md)                                   |    ✓     |    ✓     |          |
+| C++                       | [croner-cpp](https://github.com/Hexagon/croner-cpp)         | Header-only, see [Installation](/installation/)                                   |    ✓     |    ✓     |          |
 
 *Evaluate*: find next and previous runs, and check if a date matches. *Schedule*: run a function on the pattern, with pause, resume, stop and overrun protection. *Describe*: a human readable description of the pattern, like "At 09:30, on Monday, Tuesday, Wednesday, Thursday, and Friday."
 
@@ -84,10 +83,10 @@ The usage documentation for JavaScript is on this site. The other implementation
 
 ## Features
 
-*   **OCPS 1.0-1.4 compliant**: Supports the [Open Cron Pattern Specification](https://github.com/open-source-cron/ocps), including seconds and year fields, `L` (last), `W` (weekday), `#` (nth occurrence), and `+` (AND logic). DST handling follows Vixie cron instead of the OCPS 1.4 recommendation, the same in every implementation, see [Pattern](usage/pattern.md).
+*   **OCPS 1.0-1.4 compliant**: Supports the [Open Cron Pattern Specification](https://github.com/open-source-cron/ocps), including seconds and year fields, `L` (last), `W` (weekday), `#` (nth occurrence), and `+` (AND logic). DST handling follows Vixie cron instead of the OCPS 1.4 recommendation, the same in every implementation, see [Pattern](/usage/pattern/).
 *   Find next and previous runs, or check if a date matches a pattern.
 *   Target different time zones, with well defined DST behavior.
-*   Schedule functions (all but Rust), with [overrun protection](usage/examples.md#overrun-protection), [error handling](usage/examples.md#error-handling), pause, resume, stop, max runs, minimum interval, and start and stop dates.
+*   Schedule functions (all but Rust), with [overrun protection](/usage/examples/#overrun-protection), [error handling](/usage/examples/#error-handling), pause, resume, stop, max runs, minimum interval, and start and stop dates.
 *   Operates in-memory, with no need for a database or configuration files.
 *   No dependencies in JavaScript, Python, .NET and C++. The Rust crate depends on `chrono` or `jiff` for dates and times, and on `derive_builder` and `strum`.
 
@@ -99,4 +98,4 @@ The JavaScript version also:
 *   Supports asynchronous functions.
 *   Is thoroughly tested and relied upon by well-known projects such as [pm2](https://github.com/unitech/pm2), [Uptime Kuma](https://github.com/louislam/uptime-kuma), [ZWave JS](https://github.com/zwave-js/zwave-js-ui) and [TrueNAS](https://github.com/truenas/webui).
 
-More JavaScript examples are in [Usage (JavaScript)](usage/examples.md), and a comparison with other JavaScript libraries in [Comparison (JavaScript)](comparison.md).
+More JavaScript examples are in [Usage (JavaScript)](/usage/examples/), and a comparison with other JavaScript libraries in [Comparison (JavaScript)](/comparison/).

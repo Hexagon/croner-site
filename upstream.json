@@ -12,12 +12,12 @@
   "croner-py": {
     "url": "https://github.com/Hexagon/croner-py",
     "branch": "main",
-    "synced": "9236593223f795ffa513f45d84afab877dffe322"
+    "synced": "e75e5198d96050a1ec0ab2c812b7837863663b05"
   },
   "croner-dotnet": {
     "url": "https://github.com/Hexagon/croner-dotnet",
     "branch": "main",
-    "synced": "c14333d81cb66fa2eb69caa265c49c3e91747fb9"
+    "synced": "b1ec5b5184030698d6749ee685bcda5a6a705347"
   },
   "croner-cpp": {
     "url": "https://github.com/Hexagon/croner-cpp",
