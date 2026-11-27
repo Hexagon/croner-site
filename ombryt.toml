@@ -1,0 +1,18 @@
+# croner.56k.guru: markdown in src/ on ombryt's built-in docs theme (https://ombryt.56k.guru).
+# Build with `ombryt build --strict`; .github/workflows/pages.yml does that and deploys main to GitHub Pages.
+
+[site]
+url = "https://croner.56k.guru"
+title = "Croner"
+description = "Cron for JavaScript, TypeScript, Rust, Python, .NET and C++"
+language = "en"
+author = { name = "Hexagon", url = "https://github.com/Hexagon" }
+
+[build]
+src = "src"
+out = "_site"
+theme = "docs"
+strict_links = true
+
+[metas]
+image = "/assets/croner.png"

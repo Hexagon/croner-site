@@ -1,0 +1,23 @@
+# Data for every page. Pages are placed in the sidebar by their front matter: title, nav_order, and parent (the title
+# of the page they are under). nav_title is a shorter label for the sidebar and the previous/next links.
+hide_title: true    # every page starts with its own "# Heading"
+top_links:
+  - title: Installation
+    url: /installation/
+  - title: Pattern
+    url: /usage/pattern/
+  - title: JavaScript
+    url: /usage/
+  - title: GitHub
+    url: https://github.com/Hexagon/croner
+nav_links:
+  - title: croner (JavaScript)
+    url: https://github.com/Hexagon/croner
+  - title: croner-rust (Rust)
+    url: https://github.com/Hexagon/croner-rust
+  - title: croner-py (Python)
+    url: https://github.com/Hexagon/croner-py
+  - title: croner-dotnet (.NET)
+    url: https://github.com/Hexagon/croner-dotnet
+  - title: croner-cpp (C++)
+    url: https://github.com/Hexagon/croner-cpp

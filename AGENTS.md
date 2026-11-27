@@ -3,8 +3,8 @@
 ## Project Overview
 
 croner-site is the source of [croner.56k.guru](https://croner.56k.guru), the documentation site for every
-Croner implementation. It is built by a small Deno build (`scripts/build.ts` and `scripts/layout.ts`, using
-markdown-it and highlight.js), and deployed to GitHub Pages from the `main` branch. All pages are committed in `src/`: the build reads
+Croner implementation. It is built with [ombryt](https://ombryt.56k.guru) on its built-in `docs` theme
+(`ombryt.toml`), and deployed to GitHub Pages from the `main` branch. All pages are committed in `src/`: the build reads
 nothing from the other repositories.
 
 ## The Croner repositories
@@ -33,7 +33,7 @@ behavior. Read those, and the `CHANGELOG.md` where there is one, when syncing.
 | `src/usage/pattern.md`   | All five: pattern syntax, nicknames, per-language exceptions, and the "Options in each language" table with links to each README section |
 | `src/contributing.md`    | General; links to every repository                                                         |
 | `src/usage/index.md`, `basics.md`, `configuration.md`, `examples.md`, `src/comparison.md`, `src/migration.md` | JavaScript only, from croner's README, `docs/` (if present) and `CHANGELOG.md` |
-| `src/_data.json`         | `version` (croner's latest released version, used for `$CRONER_VERSION`), `nav` (the sidebar groups and page order) and `repos` (the repository links) |
+| `src/_data.yaml`         | `top_links` (the header) and `nav_links` (the repository links below the sidebar) |
 
 ## Sync instruction
 
@@ -41,13 +41,13 @@ Use this when asked to sync, update or check the site against the implementation
 says what the five implementations actually do: go through each repository, find what changed, and bring
 anything that matters for the site into the pages above.
 
-1. Run `deno task upstream`. For each repository it lists the commits and changed files since the commit
-   recorded in `upstream.json` (the last sync), with a compare link. `deno task upstream --diff` also prints
+1. Run `scripts/upstream.sh`. For each repository it lists the commits and changed files since the commit
+   recorded in `upstream.json` (the last sync), with a compare link. `scripts/upstream.sh --diff` also prints
    the diff of README, CHANGELOG, `docs/` and the version files. The clones are in `.upstream/<name>`: read
    any other file there when the diff is not enough (e.g. `git -C .upstream/croner-cpp show FETCH_HEAD:README.md`).
 2. For each changed repository, decide what affects the site. Typical things:
    - a new release (version file, CHANGELOG): version numbers in `src/installation.md`, `version`
-     in `src/_data.json` for croner (used for `$CRONER_VERSION`);
+     for croner also the JSR import in `src/installation.md`;
    - API changes: the quick example (a tab) in `src/index.md` must still compile/run with the current API;
    - new or removed features: the implementations table (Evaluate / Schedule / Describe) and features list
      in `src/index.md`;
@@ -57,17 +57,17 @@ anything that matters for the site into the pages above.
      language" table and that the README anchors it links to still exist. Say which implementations
      support a change rather than describing it as universal;
    - croner (JavaScript) only: the usage, comparison and migration pages. croner may still keep copies of
-     these in its `docs/`; carry over changes made there. A new page must also be added to `nav` in
-     `src/_data.json`, and a removed one taken out of it.
+     these in its `docs/`; carry over changes made there. A new page needs `title`, `nav_order` and
+     `parent` front matter to be placed in the sidebar.
    Internal changes (tests, refactoring, CI) need nothing on the site.
 
    The site follows the branch in `upstream.json`: `master` (released) for croner, `main` for the others.
    When `main` is ahead of the published package (compare the version file with the package registry),
    follow `main` but say so in the pull request, and on the site where a copied example would fail.
    Check changed examples against the code: compile or run them where you can.
-3. Make the changes on a branch of croner-site (never push to `main`), build with `deno task build`, and
+3. Make the changes on a branch of croner-site (never push to `main`), build with `ombryt build --strict`, and
    fix any errors.
-4. Run `deno task upstream --update` to record the commits you synced to in `upstream.json`, and commit it
+4. Run `scripts/upstream.sh --update` to record the commits you synced to in `upstream.json`, and commit it
    with the page changes. Update `upstream.json` even when nothing on the site needed to change, so the
    next sync starts from there.
 5. Open a pull request to croner-site. List per repository what changed upstream and what you changed on
@@ -78,31 +78,30 @@ do not paper over it on the site.
 
 ## Development
 
-Requires [Deno](https://deno.com) 2.
+Requires [ombryt](https://ombryt.56k.guru) (`cargo install ombryt --locked`, or a release archive) and git.
 
 ```bash
-deno task serve   # rebuild on change, http://localhost:8000
-deno task build   # to _site/
-deno task upstream         # what changed in the five repositories since last sync (--diff, --update)
+ombryt serve                 # rebuild on change, with live reload
+ombryt build --strict        # to _site/; --strict fails on broken internal links and #fragments
+scripts/upstream.sh          # what changed in the five repositories since last sync (--diff, --update)
 ```
 
-- `nav` in `src/_data.json` sets the sidebar groups, the page order and the previous/next links. A page is listed as
-  its path in `src/`, or as `[path, label]` to show a shorter label. The build warns about pages that are not
-  listed. Front matter `title` is the page title; `nav_order`, `parent` and `has_children` are ignored.
-  `layout: home` is used by `src/index.md` only.
-- `$CRONER_VERSION` in a page is replaced with `version` in `src/_data.json`.
-- Relative links to `.md` files are rewritten to page URLs (`usage/pattern.md` becomes `/usage/pattern/`).
-- `{ .note }` or `{ .warning }` on the line after a block quote (or `{: .note }` before a paragraph) makes it a
-  callout. A leading bold line (`**Warning**`) becomes its title.
-- Code blocks get a header with the language and a copy button. ```` ```rust title="Rust" ```` sets the header text,
-  and code blocks with titles inside `<div class="tabs">` (with blank lines around them) become tabs, as in the quick
-  examples in `src/index.md`.
-- Templates are in `scripts/layout.ts`; styles, the client script (theme, tabs, copy, search), fonts and the logo are
-  in `src/assets/`. Files in `src/` that are not Markdown are copied as they are; names starting with `_` are
-  skipped. The build also writes `search.json`, `sitemap.xml` and `robots.txt`.
-- `_site/` and `.upstream/` (clones made by `deno task upstream`) are ignored by git.
+- Every page in `src/` has front matter: `title`, and `nav_order` and `parent` (the `title` of the page it is
+  under) to place it in the sidebar. `nav_title` is a shorter label for the sidebar and the previous/next links,
+  and `nav_exclude: true` leaves a page out. The order also gives the previous/next links. Pages start with their
+  own `# Heading` (`hide_title: true` is set for all pages in `src/_data.yaml`).
+- Link to other pages by URL (`/usage/pattern/`, `/usage/examples/#error-handling`); the build checks every
+  internal link and fragment.
+- Callouts are GitHub alerts: a block quote starting with `> [!NOTE]` or `> [!WARNING]`.
+- Code tabs: code blocks inside `<div class="tabs" data-labels="JavaScript,Rust,...">` (with blank lines around
+  them) become tabs, one label per block, as in the quick examples in `src/index.md`.
+- The layout is ombryt's `docs` theme. Additions are in `src/_includes/head.html` (stylesheet, tab script,
+  analytics), `src/_includes/footer.html`, `src/assets/croner.css` and `src/assets/croner.js`; the icon is
+  `src/favicon.svg`. Files in `src/` that are not Markdown are copied as they are; names starting with `_` are
+  skipped. The build also writes `search.json` and `sitemap.xml`.
+- `_site/` and `.upstream/` (clones made by `scripts/upstream.sh`) are ignored by git.
 
 ## Publishing
 
-`.github/workflows/pages.yml` builds on pull requests and on every push; only pushes to `main` (or a manual
+`.github/workflows/pages.yml` installs ombryt with the `Hexagon/ombryt@v0` action and builds on pull requests and on every push; only pushes to `main` (or a manual
 run on `main`) deploy to GitHub Pages. Merging to `main` is publishing.

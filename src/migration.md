@@ -1,6 +1,8 @@
 ---
 title: "Migration (JavaScript)"
-nav_order: 6
+nav_title: Migration
+parent: Usage (JavaScript)
+nav_order: 5
 ---
 
 # Migration

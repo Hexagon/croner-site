@@ -1,6 +1,6 @@
 ---
 title: "Contributing"
-nav_order: 7
+nav_order: 4
 ---
 
 # Contributing to Croner
@@ -18,7 +18,7 @@ Croner is developed in one repository per language, plus one for this site. Cont
 | [croner-cpp](https://github.com/Hexagon/croner-cpp)       | C++                          | [Tests](https://github.com/Hexagon/croner-cpp#tests)                                      |
 | [croner-site](https://github.com/Hexagon/croner-site)     | This site                    | See below                                                                                 |
 
-If you're looking to support Croner financially, consider checking out our [Sponsorship page](sponsors.md).
+If you're looking to support Croner financially, consider checking out our [Sponsorship page](/sponsors/).
 
 ## Issues
 
@@ -28,12 +28,12 @@ A change to how patterns are read should be made in every implementation, so tha
 
 ## Changing this site
 
-The site is built from Markdown by a small Deno script, and published to GitHub Pages from the `main` branch of [croner-site](https://github.com/Hexagon/croner-site).
+The site is built from Markdown with [ombryt](https://ombryt.56k.guru), and published to GitHub Pages from the `main` branch of [croner-site](https://github.com/Hexagon/croner-site).
 
 All pages are in `src/` in croner-site, and the site is built from that repository alone.
 
 -   The overview, installation, pattern, contributing and sponsorship pages are shared by all implementations.
 -   The usage, comparison and migration pages are for JavaScript.
--   The site follows the implementation repositories: `deno task upstream` lists what has changed in them since the site was last synced.
+-   The site follows the implementation repositories: `scripts/upstream.sh` lists what has changed in them since the site was last synced.
 
-To build the site locally, install [Deno](https://deno.com), then run `deno task serve` in croner-site.
+To build the site locally, install [ombryt](https://ombryt.56k.guru), then run `ombryt serve` in croner-site.

@@ -1,6 +1,6 @@
 ---
 title: "Basics"
-parent: "Usage (JavaScript)"
+parent: Usage (JavaScript)
 nav_order: 1
 ---
 

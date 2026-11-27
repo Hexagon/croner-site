@@ -1,6 +1,6 @@
 ---
 title: "Installation"
-nav_order: 2
+nav_order: 1
 ---
 
 # Installation
@@ -13,8 +13,8 @@ Croner is available for JavaScript/TypeScript, Rust, Python, .NET and C++. Pick 
 
 Croner can be installed using your preferred package manager or CDN. After installation, it can be included in your project as follows:
 
-> If you are migrating from a different library such as `cron` or `node-cron`, or upgrading from an older version of croner, see the [Migration Guide](migration.md).
-{ .note }
+> [!NOTE]
+> If you are migrating from a different library such as `cron` or `node-cron`, or upgrading from an older version of croner, see the [Migration Guide](/migration/).
 
 ### Importing with Node.js or Bun
 
@@ -33,7 +33,7 @@ const { Cron } = require("croner");
 For Deno, import Croner from JSR:
 
 ```ts
-import { Cron } from "jsr:@hexagon/croner@$CRONER_VERSION";
+import { Cron } from "jsr:@hexagon/croner@11.0.0";
 ```
 
 ### In a Webpage Using the UMD-module
@@ -70,10 +70,10 @@ On Windows, which has no system time zone database, use `pip install croner[tzda
 Croner for .NET targets .NET 8 and .NET 10:
 
 ```sh
-dotnet add package Croner --prerelease
+dotnet add package Croner
 ```
 
-Croner for .NET is in preview, so `--prerelease` is needed until 1.0.0 is released. The examples on this site use the API of 1.0.0-preview.2, which renames several members of 1.0.0-preview.1 (for example `IterAfter` is now `GetNextOccurrences`), see the [changelog](https://github.com/Hexagon/croner-dotnet/blob/main/CHANGELOG.md).
+Croner for .NET 1.0.0 is the first stable release. Coming from a 1.0.0 preview, see the [changelog](https://github.com/Hexagon/croner-dotnet/blob/main/CHANGELOG.md): 1.0.0-preview.2 renamed several members of preview.1 (for example `IterAfter` is now `GetNextOccurrences`), and 1.0.0 parses patterns more strictly.
 
 See [croner-dotnet](https://github.com/Hexagon/croner-dotnet) for usage.
 

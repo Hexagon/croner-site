@@ -1,0 +1,22 @@
+/* Additions to ombryt's docs theme: Croner's colors, callouts, the code tabs on the overview and its intro links. */
+:root { --accent: #15824a; }
+@media (prefers-color-scheme: dark) { :root { --accent: #4cc38a; } }
+
+blockquote { margin: 1.2rem 0; padding: 0.6rem 1rem; border-left: 4px solid var(--line); background: color-mix(in srgb, var(--line) 35%, transparent); border-radius: 0 6px 6px 0; }
+blockquote > :first-child { margin-top: 0; }
+blockquote > :last-child { margin-bottom: 0; }
+.markdown-alert-note { border-left-color: #3b82f6; }
+.markdown-alert-warning { border-left-color: #d97706; }
+.markdown-alert-note::before, .markdown-alert-warning::before { display: block; font-weight: 600; margin-bottom: 0.2rem; }
+.markdown-alert-note::before { content: "Note"; color: #3b82f6; }
+.markdown-alert-warning::before { content: "Warning"; color: #d97706; }
+
+.lead { font-size: 1.2rem; color: var(--muted); }
+.links { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.links a { border: 1px solid var(--line); border-radius: 6px; padding: 0.3rem 0.75rem; text-decoration: none; }
+
+.tab-bar { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 1rem; }
+.tab-bar button { font: inherit; font-size: 0.9em; padding: 0.3rem 0.8rem; border: 1px solid var(--line); border-bottom: 0; border-radius: 6px 6px 0 0; background: transparent; color: var(--muted); cursor: pointer; }
+.tab-bar button[aria-selected="true"] { background: var(--code-bg); color: var(--fg); }
+.tabs.ready pre { margin-top: 0; border-top-left-radius: 0; }
+.tabs.ready pre[hidden] { display: none; }

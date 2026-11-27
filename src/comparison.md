@@ -1,6 +1,8 @@
 ---
 title: "Comparison (JavaScript)"
-nav_order: 5
+nav_title: Comparison
+parent: Usage (JavaScript)
+nav_order: 4
 ---
 
 # Feature comparison
@@ -38,7 +40,7 @@ The table below provides a brief overview of each library's features.
 | Nearest weekday (W)       |          ✓          |                     |           |                           |                     |
 | AND logic modifier (+)    |          ✓          |                     |           |                           |                     |
 
+> [!NOTE]
 > **DOM and DOW?**<br>
 > DOM stands for Day of Month, and DOW stands for Day of Week.
-{ .note }
 

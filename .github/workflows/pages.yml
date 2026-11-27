@@ -1,6 +1,6 @@
 name: Build and deploy to GitHub Pages
 
-# The site is built from this repository alone (all pages are committed in src/).
+# The site is built with ombryt (https://ombryt.56k.guru) from this repository alone (all pages are committed in src/).
 # Pull requests and other branches only build; pushes to main also deploy.
 on:
   push:
@@ -35,13 +35,11 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: actions/configure-pages@v6
 
-      - name: Install Deno
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version: "v2.x"
+      - name: Install ombryt
+        uses: Hexagon/ombryt@v0
 
       - name: Build
-        run: deno task build
+        run: ombryt build --strict
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5

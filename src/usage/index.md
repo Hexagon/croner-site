@@ -1,7 +1,7 @@
 ---
 title: "Usage (JavaScript)"
-has_children: true
-nav_order: 4
+nav_title: JavaScript
+nav_order: 3
 ---
 
 # Usage (JavaScript)
@@ -48,4 +48,4 @@ Time is ISO 8601 local time, this will run 2030-01-23 00:00:00 according to the 
 new Cron('2030-01-23T00:00:00', { timezone: 'Asia/Kolkata' }, () => { console.log('Yay!') });
 ```
 
-More examples at [Examples](examples.md)
+More examples at [Examples](/usage/examples/)
